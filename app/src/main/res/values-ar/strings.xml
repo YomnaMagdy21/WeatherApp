@@ -2,4 +2,21 @@
 <resources>
     <string name="home">الصفحة الرئيسية</string>
     <string name="fav">المفضلة</string>
+    <string name="setting">الاعدادات</string>
+    <string name="location">الموقع</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="map">الخريطة</string>
+    <string name="language">اللغة</string>
+    <string name="english">الانجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="notifications">الاشعارات</string>
+    <string name="enable">اتاحة</string>
+    <string name="disable">ايقاف</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="meter_sec">متر/ثانية</string>
+    <string name="mile_hour">ميل/ساعة</string>
+    <string name="temperature">درجة حرارة</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
 </resources>

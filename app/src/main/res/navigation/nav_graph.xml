@@ -10,4 +10,14 @@
         android:name="com.example.weatherapp.home.view.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.weatherapp.favorite.view.FavoriteFragment"
+        android:label="FavoriteFragment"
+        tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.weatherapp.setting.view.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting" />
 </navigation>
