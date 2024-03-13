@@ -19,4 +19,10 @@
     <string name="celsius">درجة مئوية</string>
     <string name="kelvin">كلفن</string>
     <string name="fahrenheit">فهرنهايت</string>
+    <string name="pressure">الضغط الجوي</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="wind">الرياح</string>
+    <string name="clouds">السحاب</string>
+    <string name="uv">الاشعة تحت البنفسجية</string>
+    <string name="visibilty">الرؤية</string>
 </resources>

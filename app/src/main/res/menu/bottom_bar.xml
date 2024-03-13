@@ -11,8 +11,8 @@
         android:title="Favoraite"
         android:icon="@drawable/black_fav"/>
     <item
-        android:id="@+id/search"
-        android:title="Search"
+        android:id="@+id/setting"
+        android:title="Setting"
 
         android:icon="@drawable/setting"/>
 

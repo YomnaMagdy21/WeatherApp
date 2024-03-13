@@ -12,7 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     lateinit var navController:NavController
-    lateinit var bottomNavView:BottomNavigationView
+   // lateinit var bottomNavView:BottomNavigationView
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,26 +23,24 @@ class MainActivity : AppCompatActivity() {
 
 
         navController = findNavController(this, R.id.nav_home_fragment)
-        setupWithNavController(bottomNavView, navController)
+        setupWithNavController(binding.bottomAppBar, navController)
         binding.bottomAppBar.setOnNavigationItemSelectedListener{  item ->
             when (item.itemId) {
                 R.id.home -> {
                     navController.navigate(R.id.homeFragment)
                     return@setOnNavigationItemSelectedListener true
                 }
-//                R.id.search -> {
-//                    // Toast.makeText(this, "search", Toast.LENGTH_SHORT).show()
-//                    navController.navigate(R.id.searchFragment)
-//                    return@setOnNavigationItemSelectedListener true
-//                }
-//                R.id.fav -> {
-//                    if (!LoginFragment.flag) {
-//                        navController.navigate(R.id.favoriteFragment)
-//                    } else {
-//                        Toast.makeText(this@MainActivity, "Not Available for guest", Toast.LENGTH_LONG).show()
-//                    }
-//                    return@setOnNavigationItemSelectedListener true
-//                }
+                R.id.setting -> {
+
+                    navController.navigate(R.id.settingFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.fav -> {
+
+                        navController.navigate(R.id.favoriteFragment)
+
+                    return@setOnNavigationItemSelectedListener true
+                }
 
             }
             false
