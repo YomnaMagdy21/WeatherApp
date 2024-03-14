@@ -26,9 +26,12 @@ class HourAdapter (var context: Context):
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val current = getItem(position)
+
         holder.binding.degree.text = current.temp.toString()
         holder.binding.hour.text = current.feels_like.toString()
-        //  Glide.with(context).load(current.).into(holder.binding.img)
+        var iconName=current.weather[0].icon
+
+          Glide.with(context).load(" https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.img)
 //        holder.binding.btnFavRemove.setOnClickListener{
 //            listener.onClick(current)
 //        }

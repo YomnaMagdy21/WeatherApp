@@ -12,7 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     lateinit var navController:NavController
-   // lateinit var bottomNavView:BottomNavigationView
+
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +38,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.fav -> {
 
                         navController.navigate(R.id.favoriteFragment)
+
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.alert -> {
+
+                    navController.navigate(R.id.alertFragment)
 
                     return@setOnNavigationItemSelectedListener true
                 }

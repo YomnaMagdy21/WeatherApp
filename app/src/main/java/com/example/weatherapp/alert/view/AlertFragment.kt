@@ -1,4 +1,4 @@
-package com.example.weatherapp.favorite.view
+package com.example.weatherapp.alert.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,16 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.FragmentAlertBinding
-import com.example.weatherapp.databinding.FragmentFavoriteBinding
-import com.example.weatherapp.map.view.MapFragment
+import com.example.weatherapp.databinding.FragmentHomeBinding
 
-class FavoriteFragment : Fragment() {
-    lateinit var binding : FragmentFavoriteBinding
 
+class AlertFragment : Fragment() {
+
+    lateinit var binding : FragmentAlertBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
 
+        }
     }
 
     override fun onCreateView(
@@ -24,27 +26,18 @@ class FavoriteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-
-        binding.floatingActionButton.setOnClickListener{
-            requireActivity()
-                .supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.main, MapFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+        binding = FragmentAlertBinding.inflate(inflater, container, false)
 
         return binding.root
     }
 
-
-
     companion object {
-         @JvmStatic
+           @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            FavoriteFragment().apply {
+            AlertFragment().apply {
+                arguments = Bundle().apply {
 
+                }
             }
     }
 }

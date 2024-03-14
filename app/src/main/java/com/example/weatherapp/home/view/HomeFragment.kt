@@ -62,6 +62,10 @@ class HomeFragment : Fragment() {
         }
 
     }
+
+    fun getCurrent(){
+
+    }
     companion object {
         fun newInstance(param1: String, param2: String) =
             HomeFragment().apply {

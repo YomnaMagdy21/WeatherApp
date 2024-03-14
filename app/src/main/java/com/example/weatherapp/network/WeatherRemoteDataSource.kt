@@ -4,5 +4,6 @@ import com.example.weatherapp.model.WeatherResponse
 
 interface WeatherRemoteDataSource {
 
-    suspend fun getTempOverNetwork(lat:Double,lon:Double,exclude:String):WeatherResponse
+    suspend fun getTempOverNetwork(lat:Double,lon:Double,exclude:String,units:String,
+                                   lang:String):WeatherResponse
 }

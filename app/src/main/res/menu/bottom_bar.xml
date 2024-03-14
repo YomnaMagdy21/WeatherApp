@@ -3,17 +3,22 @@
 
     <item
         android:id="@+id/home"
-        android:title="Home"
+        android:title="@string/home"
         android:icon="@drawable/baseline_home_24"/>
 
     <item
         android:id="@+id/fav"
-        android:title="Favoraite"
+        android:title="@string/fav"
         android:icon="@drawable/black_fav"/>
     <item
         android:id="@+id/setting"
-        android:title="Setting"
+        android:title="@string/setting"
 
         android:icon="@drawable/setting"/>
+    <item
+        android:id="@+id/alert"
+        android:title="@string/alert"
+
+        android:icon="@drawable/alert"/>
 
 </menu>

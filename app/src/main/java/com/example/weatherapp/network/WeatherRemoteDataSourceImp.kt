@@ -25,8 +25,10 @@ class WeatherRemoteDataSourceImp :WeatherRemoteDataSource{
     override suspend fun getTempOverNetwork(
         lat: Double,
         lon: Double,
-        exclude: String
+        exclude: String,
+        units:String,
+        lang:String
     ): WeatherResponse {
-        return weatherService.getWeather(lat,lon,exclude)
+        return weatherService.getWeather(lat,lon,exclude,units,lang)
     }
 }

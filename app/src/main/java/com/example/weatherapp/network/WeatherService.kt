@@ -11,6 +11,8 @@ suspend fun getWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("exclude") exclude: String,
+        @Query("units") units: String,
+        @Query("lang") lang:String,
         @Query("appid") apiKey: String="5ef4f6ecb7f57fedc790174a54954983"
 ): WeatherResponse
 

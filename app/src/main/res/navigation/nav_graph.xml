@@ -20,4 +20,14 @@
         android:name="com.example.weatherapp.setting.view.SettingFragment"
         android:label="SettingFragment"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.example.weatherapp.alert.view.AlertFragment"
+        android:label="AlertFragment"
+        tools:layout="@layout/fragment_alert" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.weatherapp.map.view.MapFragment"
+        android:label="MapFrahment"
+        tools:layout="@layout/fragment_map" />
 </navigation>

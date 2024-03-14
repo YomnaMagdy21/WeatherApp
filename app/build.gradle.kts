@@ -39,6 +39,8 @@ android {
         viewBinding =true
 
     }
+
+
 }
 
 dependencies {
@@ -53,6 +55,7 @@ dependencies {
 
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.13.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
 //Retrofit
     implementation ("com.google.code.gson:gson:2.9.0")
@@ -70,6 +73,26 @@ dependencies {
 
     //lottiefiles
     implementation ("com.airbnb.android:lottie:3.4.0")
+    //openStreetMap
+    implementation ("org.osmdroid:osmdroid-android:6.1.14")
+//    implementation ("org.osmdroid:osmdroid-android:7.0.1")
+//    implementation ("org.osmdroid:osmdroid-wms:7.0.1")
+//    implementation ("org.osmdroid:osmdroid-mapsforge:7.0.1")
+//    implementation ("org.osmdroid:osmdroid-geopackage:7.0.1")
+//    implementation ("org.osmdroid:osmdroid-third-party:6.0.1")
+//    implementation ("org.mapsforge:mapsforge-map-android:0.20.0")
+//    implementation ("org.mapsforge:mapsforge-map:0.20.0")
+//    implementation ("org.mapsforge:mapsforge-themes:0.20.0")
+//
+//
+//    implementation ("androidx.legacy:legacy-support-v4:1.0.0")
+//    implementation (project(":osmdroid-android"))
+//    implementation (project(":osmdroid-geopackage"))
+//    implementation (project(":osmdroid-mapsforge"))
+//    implementation (project(":osmdroid-wms"))
+//    implementation (project(":osmdroid-shape"))
+
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
