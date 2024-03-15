@@ -25,5 +25,9 @@
     <string name="clouds">السحاب</string>
     <string name="uv">الاشعة تحت البنفسجية</string>
     <string name="visibilty">الرؤية</string>
-    <string name="alert">Alert</string>
+    <string name="alert">انذار</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="alarm">Alarm</string>
+    <string name="save">Save</string>
 </resources>

@@ -5,10 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentHomeBinding
+import com.example.weatherapp.home.viewmodel.HomeViewModel
+import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+import com.example.weatherapp.model.WeatherRepositoryImp
+import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 
 
 class HomeFragment : Fragment() {
@@ -16,6 +22,8 @@ class HomeFragment : Fragment() {
     lateinit var binding : FragmentHomeBinding
     lateinit var hourAdapter:HourAdapter
     lateinit var dayAdapter:DayAdapter
+    lateinit var homeViewModel:HomeViewModel
+    lateinit var homeViewModelFactory: HomeViewModelFactory
 
 
 
@@ -38,8 +46,20 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        homeViewModelFactory= HomeViewModelFactory(WeatherRepositoryImp.getInstance(
+            WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
+        ))
+
+        homeViewModel= ViewModelProvider(this,homeViewModelFactory).get(HomeViewModel::class.java)
+
+
         setUpRecyclerViewHour()
         setUpRecyclerViewDay()
+        homeViewModel.weather.observe(requireActivity()){ days ->
+            dayAdapter.submitList(days.list)
+        }
+
+
     }
 
 
@@ -55,7 +75,7 @@ class HomeFragment : Fragment() {
 
     fun setUpRecyclerViewDay(){
         dayAdapter=DayAdapter(requireActivity())
-        binding.recViewHour.apply {
+        binding.recViewDay.apply {
             adapter = dayAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 

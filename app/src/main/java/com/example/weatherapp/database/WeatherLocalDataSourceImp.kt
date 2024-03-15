@@ -1,4 +1,6 @@
 package com.example.weatherapp.database
 
-class WeatherLocalDataSourceImp {
+import android.content.Context
+
+class WeatherLocalDataSourceImp (context: Context):WeatherLocalDataSource {
 }

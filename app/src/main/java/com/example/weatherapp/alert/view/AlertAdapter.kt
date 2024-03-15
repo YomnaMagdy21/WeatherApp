@@ -1,4 +1,4 @@
-package com.example.weatherapp.favorite.view
+package com.example.weatherapp.alert.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,23 +6,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.weatherapp.databinding.DayItemBinding
+import com.example.weatherapp.databinding.AlertItemBinding
 import com.example.weatherapp.databinding.FavItemBinding
-import com.example.weatherapp.home.view.DayAdapter
+import com.example.weatherapp.favorite.view.FavoriteAdapter
 import com.example.weatherapp.model.Day
 
-class FavoriteAdapter(var context: Context):
-    ListAdapter<Day, FavoriteAdapter.DayViewHolder>(DayDiffUtil()) {
+class AlertAdapter (var context: Context):
+    ListAdapter<Day, AlertAdapter.DayViewHolder>(DayDiffUtil()) {
 
 
-    lateinit var binding: FavItemBinding
+    lateinit var binding: AlertItemBinding
 
 
-    class DayViewHolder(var binding: FavItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class DayViewHolder(var binding: AlertItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
-        binding = FavItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = AlertItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DayViewHolder(binding)
     }
 

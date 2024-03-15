@@ -92,6 +92,8 @@ dependencies {
 //    implementation (project(":osmdroid-wms"))
 //    implementation (project(":osmdroid-shape"))
 
+//location
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 
 
     testImplementation("junit:junit:4.13.2")

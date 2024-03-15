@@ -28,4 +28,8 @@
     <string name="uv">Ultra Violet</string>
     <string name="visibilty">Visibilty</string>
     <string name="alert">Alert</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="alarm">Alarm</string>
+    <string name="save">Save</string>
 </resources>

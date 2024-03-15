@@ -12,6 +12,7 @@ import com.example.weatherapp.databinding.DayItemBinding
 import com.example.weatherapp.databinding.HourItemBinding
 import com.example.weatherapp.model.Day
 import com.example.weatherapp.model.Hour
+import com.example.weatherapp.model.WeatherResponse
 
 class DayAdapter (var context: Context):
     ListAdapter<Day, DayAdapter.DayViewHolder>(DayDiffUtil()) {
@@ -29,10 +30,10 @@ class DayAdapter (var context: Context):
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val current = getItem(position)
-        holder.binding.tempDesc.text = current.temp.toString()
-        holder.binding.tempNo.text = current.dt.toString()
+        holder.binding.tempDesc.text = current.weather[0].description
+        holder.binding.tempNo.text = current.main.temp.toString()
         var iconName=current.weather[0].icon
-        Glide.with(context).load(" https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.imgWeather)
+        Glide.with(context).load("https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.imgWeather)
 //        holder.binding.btnFavRemove.setOnClickListener{
 //            listener.onClick(current)
 //        }
