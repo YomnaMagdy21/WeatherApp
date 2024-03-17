@@ -47,10 +47,29 @@ class DayAdapter (var context: Context):
         val date = dateTime.toLocalDate()
 
         val dayOfWeekEnum = date.dayOfWeek
+        val daysToShow = mutableSetOf<String>()
+        val daysToShowCount = 5 // Number of unique days to show
+
+
 
         val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+//        for (dateTime in current.dt_txt) {
+//            val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+//            daysToShow.add(dayOfWeekName)
+//            if (daysToShow.size >= daysToShowCount) {
+//                break // Break loop once desired number of unique days is reached
+//            }
+//        current.dt_txt.map {
+//            if(daysToShow.contains(dayOfWeekName)){
+//                holder.binding.day.text=dayOfWeekName
+//            }
+//
+//        }
 
         holder.binding.day.text=dayOfWeekName
+
+
+
         var iconName=current.weather[0].icon
         Glide.with(context).load("https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.imgWeather)
 //        holder.binding.btnFavRemove.setOnClickListener{

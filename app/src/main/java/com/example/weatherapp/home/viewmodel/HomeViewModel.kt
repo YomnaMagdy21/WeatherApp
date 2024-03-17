@@ -18,8 +18,8 @@ class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
     val weather: MutableStateFlow<UIState> = _weather
 
     init {
-      //  getWeather(37.4220936,-122.083922,"","","")
-        geCurrentWeather(37.4220936,-122.083922,"","")
+        getWeather(37.4220936,-122.083922,"","","")
+      //  geCurrentWeather(37.4220936,-122.083922,"","")
     }
 //
 

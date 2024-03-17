@@ -112,16 +112,42 @@ class HomeFragment : Fragment() {
                         binding.cardView.visibility = View.VISIBLE
 
                         val dataList = result.data as? WeatherResponse
-//                        dataList?.list?.let { weatherList ->
-//                            val distinctWeatherList = weatherList.distinctBy { weatherData ->
-//
-//                            }
-//                            dayAdapter.submitList(distinctWeatherList)
-//                        }
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        val dateTime = LocalDateTime.parse(dataList?.list?.get(0)?.dt_txt, formatter)
+                        val date = dateTime.toLocalDate()
+                        val daysToShow = mutableSetOf<String>()
+                        dataList?.list?.let { weatherList ->
+                            val distinctWeatherList = weatherList.filter { weatherData ->
+                                val day = weatherData.dt_txt.split(" ")
+                                if (daysToShow.contains(day[0])) {
+                                    false
+                                } else {
+                                    daysToShow.add(day[0])
+                                    true
+                                }
+                            }.take(5)
+
+                            dayAdapter.submitList(distinctWeatherList)
+                        }
+                        dataList?.list?.let { weatherList ->
+                            val distinctWeatherList = weatherList.filter { weatherData ->
+                                val day = weatherData.dt_txt.split(" ")
+                                if (daysToShow.contains(day[1])) {
+                                    false
+                                } else {
+                                    daysToShow.add(day[1])
+                                    true
+                                }
+                            }
+
+                            hourAdapter.submitList(distinctWeatherList)
+                        }
+
+
 
                             Log.i("TAG", "onViewCreated: $dataList")
-                            hourAdapter.submitList(dataList?.list)
-                        dayAdapter.submitList(dataList?.list)
+                          //  hourAdapter.submitList(dataList?.list)
+                       // dayAdapter.submitList(dataList?.list)
 //                        //val current=result.data as? CurrentWeather
                             binding.city.text = dataList?.city?.name
                             binding.desc.text = dataList?.list?.get(0)?.weather?.get(0)?.description
@@ -130,11 +156,9 @@ class HomeFragment : Fragment() {
                                 .load("https://openweathermap.org/img/wn/$iconName@2x.png")
                                 .into(binding.icon)
                             binding.temp.text = dataList?.list?.get(0)?.main?.temp.toString()
-                            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                            val dateTime =
-                                LocalDateTime.parse(dataList?.list?.get(0)?.dt_txt, formatter)
-                            val date = dateTime.toLocalDate()
-                            binding.date.text = date.toString()
+
+                            binding.date.text = dataList?.list?.get(0)?.dt_txt
+                                //date.toString()
                             binding.pressure.text =
                                 dataList?.list?.get(0)?.main?.pressure.toString()
                             binding.humidity.text =
