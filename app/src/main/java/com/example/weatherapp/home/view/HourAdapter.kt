@@ -1,17 +1,22 @@
 package com.example.weatherapp.home.view
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.HourItemBinding
 import com.example.weatherapp.model.Hour
+import com.example.weatherapp.model.WeatherData
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HourAdapter (var context: Context):
-    ListAdapter<Hour, HourAdapter.ProductViewHolder>(HourDiffUtil()) {
+    ListAdapter<WeatherData, HourAdapter.ProductViewHolder>(HourDiffUtil()) {
 
 
     lateinit var binding: HourItemBinding
@@ -24,14 +29,19 @@ class HourAdapter (var context: Context):
         return ProductViewHolder(binding)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val current = getItem(position)
 
-        holder.binding.degree.text = current.temp.toString()
-        holder.binding.hour.text = current.feels_like.toString()
+        holder.binding.degree.text = current.main.temp.toString()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = LocalDateTime.parse(current.dt_txt, formatter)
+        val time = dateTime.toLocalTime()
+        holder.binding.hour.text = time.toString()
         var iconName=current.weather[0].icon
 
-          Glide.with(context).load(" https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.img)
+        Glide.with(context).load("https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.img)
+
 //        holder.binding.btnFavRemove.setOnClickListener{
 //            listener.onClick(current)
 //        }
@@ -40,12 +50,12 @@ class HourAdapter (var context: Context):
     }
 }
 
-    class HourDiffUtil : DiffUtil.ItemCallback<Hour>(){
-        override fun areItemsTheSame(oldItem: Hour, newItem: Hour): Boolean {
+    class HourDiffUtil : DiffUtil.ItemCallback<WeatherData>(){
+        override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Hour, newItem: Hour): Boolean {
+        override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
             return newItem == oldItem
         }
 

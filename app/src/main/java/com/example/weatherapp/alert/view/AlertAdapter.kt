@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.AlertItemBinding
 import com.example.weatherapp.databinding.FavItemBinding
 import com.example.weatherapp.favorite.view.FavoriteAdapter
-import com.example.weatherapp.model.Day
+
+import com.example.weatherapp.model.WeatherData
 
 class AlertAdapter (var context: Context):
-    ListAdapter<Day, AlertAdapter.DayViewHolder>(DayDiffUtil()) {
+    ListAdapter<WeatherData, AlertAdapter.DayViewHolder>(DayDiffUtil()) {
 
 
     lateinit var binding: AlertItemBinding
@@ -39,12 +40,12 @@ class AlertAdapter (var context: Context):
     }
 }
 
-class DayDiffUtil : DiffUtil.ItemCallback<Day>() {
-    override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean {
+class DayDiffUtil : DiffUtil.ItemCallback<WeatherData>() {
+    override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: Day, newItem: Day): Boolean {
+    override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
         return newItem == oldItem
     }
 

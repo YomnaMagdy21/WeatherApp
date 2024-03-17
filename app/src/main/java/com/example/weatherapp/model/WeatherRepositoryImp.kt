@@ -1,7 +1,9 @@
 package com.example.weatherapp.model
 
+import com.example.weatherapp.CurrentWeather
 import com.example.weatherapp.database.WeatherLocalDataSource
 import com.example.weatherapp.network.WeatherRemoteDataSource
+import kotlinx.coroutines.flow.Flow
 
 class WeatherRepositoryImp private constructor(private var weatherRemoteDataSource: WeatherRemoteDataSource,
                                                private var weatherLocalDataSource: WeatherLocalDataSource
@@ -22,7 +24,16 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
         }
     }
 
-    override suspend fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): WeatherResponse {
+    override suspend fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<WeatherResponse> {
         return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,lang,units)
+    }
+
+    override suspend fun getCurrentWeather(
+        lat: Double,
+        lon: Double,
+        lang: String,
+        units: String
+    ): Flow<CurrentWeather> {
+        return weatherRemoteDataSource.getCurrentWeatherOverNetwork(lat,lon,lang,units)
     }
 }

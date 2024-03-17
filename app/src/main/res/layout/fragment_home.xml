@@ -22,6 +22,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,37 +33,36 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:text="TextView"
                 android:textSize="48sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintTop_toBottomOf="@+id/date" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="TextView"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/temp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewHour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:alpha="0.8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/icon" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewDay"
@@ -72,36 +72,34 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:alpha="0.7"
+                android:alpha="0.8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recViewHour" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text="TextView"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintTop_toBottomOf="@+id/city" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60dp"
@@ -109,14 +107,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/temp" />
 
             <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:id="@+id/cardView"
+                android:layout_width="350dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="100dp"
                 android:alpha="0.7"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.551"
                 app:layout_constraintStart_toStartOf="parent"
@@ -124,20 +127,21 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
 
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="70dp"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/pressure"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/pressure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -155,9 +159,9 @@
                         android:text="@string/pressure"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView2"
-                        app:layout_constraintStart_toStartOf="@+id/textView2"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                        app:layout_constraintEnd_toEndOf="@+id/pressure"
+                        app:layout_constraintStart_toStartOf="@+id/pressure"
+                        app:layout_constraintTop_toBottomOf="@+id/pressure" />
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -171,7 +175,7 @@
                         app:layout_constraintVertical_bias="1.0" />
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/humidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -189,24 +193,22 @@
                         android:text="@string/humidity"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView8"
-                        app:layout_constraintStart_toStartOf="@+id/textView8"
-                        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                        app:layout_constraintEnd_toEndOf="@+id/humidity"
+                        app:layout_constraintStart_toStartOf="@+id/humidity"
+                        app:layout_constraintTop_toBottomOf="@+id/humidity" />
 
                     <ImageView
                         android:id="@+id/imageView4"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="120dp"
-                        android:layout_marginEnd="24dp"
                         android:src="@drawable/wind"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageView3"
-                        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+                        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                        app:layout_constraintStart_toEndOf="@+id/imageView5"
+                        app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
                     <TextView
-                        android:id="@+id/textView13"
+                        android:id="@+id/wind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -224,22 +226,22 @@
                         android:text="@string/wind"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView13"
-                        app:layout_constraintStart_toStartOf="@+id/textView13"
-                        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                        app:layout_constraintEnd_toEndOf="@+id/wind"
+                        app:layout_constraintStart_toStartOf="@+id/wind"
+                        app:layout_constraintTop_toBottomOf="@+id/wind" />
 
                     <ImageView
                         android:id="@+id/imageView5"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="70dp"
                         android:layout_marginTop="32dp"
                         android:src="@drawable/cloud"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
                     <TextView
-                        android:id="@+id/textView15"
+                        android:id="@+id/clouds"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -257,79 +259,88 @@
                         android:text="@string/clouds"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView15"
-                        app:layout_constraintStart_toStartOf="@+id/textView15"
-                        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+                        app:layout_constraintEnd_toEndOf="@+id/clouds"
+                        app:layout_constraintStart_toStartOf="@+id/clouds"
+                        app:layout_constraintTop_toBottomOf="@+id/clouds" />
 
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="32dp"
-                        android:src="@drawable/uv"
-                        app:layout_constraintEnd_toEndOf="@+id/textView12"
-                        app:layout_constraintStart_toStartOf="@+id/textView12"
-                        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/imageView6"-->
+                    <!--                        android:layout_width="40dp"-->
+                    <!--                        android:layout_height="40dp"-->
+                    <!--                        android:layout_marginTop="32dp"-->
+                    <!--                        android:src="@drawable/uv"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/textView12"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/textView12"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/textView12" />-->
 
-                    <TextView
-                        android:id="@+id/textView17"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="TextView"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="@+id/imageView6"
-                        app:layout_constraintStart_toStartOf="@+id/imageView6"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/uv"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="TextView"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/imageView6"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/imageView6"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/imageView6" />-->
 
-                    <TextView
-                        android:id="@+id/textView18"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/uv"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView17"
-                        app:layout_constraintStart_toStartOf="@+id/textView17"
-                        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/textView18"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="@string/uv"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/uv"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/uv"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/uv" />-->
 
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="32dp"
-                        android:src="@drawable/visibility"
-                        app:layout_constraintEnd_toEndOf="@+id/textView14"
-                        app:layout_constraintStart_toStartOf="@+id/textView14"
-                        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/imageView7"-->
+                    <!--                        android:layout_width="40dp"-->
+                    <!--                        android:layout_height="40dp"-->
+                    <!--                        android:layout_marginTop="32dp"-->
+                    <!--                        android:src="@drawable/visibility"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/textView14"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/textView14"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/textView14" />-->
 
-                    <TextView
-                        android:id="@+id/textView19"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="TextView"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="@+id/imageView7"
-                        app:layout_constraintStart_toStartOf="@+id/imageView7"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/visabilty"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="TextView"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/imageView7"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/imageView7"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/imageView7" />-->
 
-                    <TextView
-                        android:id="@+id/textView20"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/visibilty"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/textView19"
-                        app:layout_constraintStart_toStartOf="@+id/textView19"
-                        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/textView20"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:text="@string/visibilty"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="@+id/visabilty"-->
+                    <!--                        app:layout_constraintStart_toStartOf="@+id/visabilty"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/visabilty" />-->
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <ProgressBar
+                android:id="@+id/progBar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,11 +9,11 @@ data class WeatherResponse(
     val lon: Double,
     val timezone: String,
     val timezone_offset: Long,
-    val list: List<Day>,
+    val list: List<WeatherData>,
     val city: City
 )
 
-data class Day(
+data class WeatherData(
     val dt: Long,
     val main: Main,
     val weather: List<Weather>,

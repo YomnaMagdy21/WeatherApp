@@ -10,10 +10,11 @@ import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.DayItemBinding
 import com.example.weatherapp.databinding.FavItemBinding
 import com.example.weatherapp.home.view.DayAdapter
-import com.example.weatherapp.model.Day
+
+import com.example.weatherapp.model.WeatherData
 
 class FavoriteAdapter(var context: Context):
-    ListAdapter<Day, FavoriteAdapter.DayViewHolder>(DayDiffUtil()) {
+    ListAdapter<WeatherData, FavoriteAdapter.DayViewHolder>(DayDiffUtil()) {
 
 
     lateinit var binding: FavItemBinding
@@ -40,12 +41,12 @@ class FavoriteAdapter(var context: Context):
     }
 }
 
-class DayDiffUtil : DiffUtil.ItemCallback<Day>() {
-    override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean {
+class DayDiffUtil : DiffUtil.ItemCallback<WeatherData>() {
+    override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: Day, newItem: Day): Boolean {
+    override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
         return newItem == oldItem
     }
 

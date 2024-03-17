@@ -1,7 +1,10 @@
 package com.example.weatherapp.network
 
 import android.util.Log
+import com.example.weatherapp.CurrentWeather
 import com.example.weatherapp.model.WeatherResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class WeatherRemoteDataSourceImp :WeatherRemoteDataSource{
 
@@ -28,7 +31,24 @@ class WeatherRemoteDataSourceImp :WeatherRemoteDataSource{
         exclude: String,
         units:String,
         lang:String
-    ): WeatherResponse {
-        return weatherService.getWeather(lat,lon,exclude,units,lang)
+    ): Flow<WeatherResponse> {
+        return flow {
+            emit(weatherService.getWeather(lat,lon,exclude,units,lang))
+        }
     }
+
+    override suspend fun getCurrentWeatherOverNetwork(
+        lat: Double,
+        lon: Double,
+        units: String,
+        lang: String
+    ): Flow<CurrentWeather> {
+        return flow {
+            emit(weatherService.getCurrentWeather(lat,lon,units,lang))
+        }
+    }
+
+
+
+
 }
