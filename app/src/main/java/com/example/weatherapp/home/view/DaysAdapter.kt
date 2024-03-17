@@ -11,12 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.DayItemBinding
-import com.example.weatherapp.databinding.HourItemBinding
 
-import com.example.weatherapp.model.Hour
 import com.example.weatherapp.model.WeatherData
-import com.example.weatherapp.model.WeatherResponse
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -40,7 +36,7 @@ class DayAdapter (var context: Context):
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val current = getItem(position)
         holder.binding.tempDesc.text = current.weather[0].description
-        holder.binding.tempNo.text = current.main.temp.toString()
+        holder.binding.tempNo.text = current.main.temp_max .toString()+" / "+current.main.temp_min
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         val dateTime = LocalDateTime.parse(current.dt_txt, formatter)

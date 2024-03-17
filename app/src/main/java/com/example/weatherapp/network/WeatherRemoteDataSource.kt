@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRemoteDataSource {
 
-    suspend fun getTempOverNetwork(lat:Double,lon:Double,exclude:String,units:String,
+     fun getTempOverNetwork(lat:Double,lon:Double,exclude:String,units:String,
                                    lang:String): Flow<WeatherResponse>
     suspend fun getCurrentWeatherOverNetwork(
         lat: Double,

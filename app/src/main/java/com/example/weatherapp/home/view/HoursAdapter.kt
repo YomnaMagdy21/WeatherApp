@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.HourItemBinding
-import com.example.weatherapp.model.Hour
 import com.example.weatherapp.model.WeatherData
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

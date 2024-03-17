@@ -1,10 +1,15 @@
 package com.example.weatherapp.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 //data class WeatherResponse(var lat:Double,var lon:Double,var timezone:String,var timezone_offset:Long,
 //    var current: Current,var  hourly:List<Hour>,var daily:List<Day>,var alerts:List<Alert>) {
 //}
-
+@Entity(tableName = "Home")
 data class WeatherResponse(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int,
     val lat: Double,
     val lon: Double,
     val timezone: String,

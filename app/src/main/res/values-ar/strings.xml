@@ -21,7 +21,7 @@
     <string name="fahrenheit">فهرنهايت</string>
     <string name="pressure">الضغط الجوي</string>
     <string name="humidity">الرطوبة</string>
-    <string name="wind">الرياح</string>
+    <string name="wind">سرعة الرياح</string>
     <string name="clouds">السحاب</string>
     <string name="uv">الاشعة تحت البنفسجية</string>
     <string name="visibilty">الرؤية</string>

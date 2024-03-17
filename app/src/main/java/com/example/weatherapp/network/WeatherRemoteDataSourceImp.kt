@@ -25,7 +25,7 @@ class WeatherRemoteDataSourceImp :WeatherRemoteDataSource{
         }
     }
 
-    override suspend fun getTempOverNetwork(
+    override  fun getTempOverNetwork(
         lat: Double,
         lon: Double,
         exclude: String,

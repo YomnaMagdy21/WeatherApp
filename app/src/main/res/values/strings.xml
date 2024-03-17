@@ -23,7 +23,7 @@
     <string name="fahrenheit">Fahrenheit</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
-    <string name="wind">Wind</string>
+    <string name="wind">Wind speed</string>
     <string name="clouds">Clouds</string>
     <string name="uv">Ultra Violet</string>
     <string name="visibilty">Visibilty</string>

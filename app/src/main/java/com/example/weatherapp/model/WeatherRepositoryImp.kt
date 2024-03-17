@@ -24,7 +24,7 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
         }
     }
 
-    override suspend fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<WeatherResponse> {
+    override  fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<WeatherResponse> {
         return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,lang,units)
     }
 
@@ -35,5 +35,42 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
         units: String
     ): Flow<CurrentWeather> {
         return weatherRemoteDataSource.getCurrentWeatherOverNetwork(lat,lon,lang,units)
+    }
+
+    override fun getHomeWeather(): Flow<WeatherResponse> {
+        return weatherLocalDataSource.getStoredWeather()
+    }
+
+    override suspend fun insertHomeWeather(weatherResponse: WeatherResponse) {
+        weatherLocalDataSource.insert(weatherResponse)
+    }
+
+    override suspend fun deleteHomeWeather(weatherResponse: WeatherResponse) {
+        weatherLocalDataSource.delete(weatherResponse)
+    }
+
+    override fun getFavoriteWeather(): Flow<List<Favorite>> {
+        return weatherLocalDataSource.getStoredFavorite()
+    }
+
+    override suspend fun insertFavoriteWeather(favorite: Favorite) {
+        weatherLocalDataSource.insertFav(favorite)
+    }
+
+    override suspend fun deleteFavoriteWeather(favorite: Favorite) {
+        weatherLocalDataSource.deleteFav(favorite)
+
+    }
+
+    override fun getAlertWeather(): Flow<List<Alert>> {
+        return weatherLocalDataSource.getStoredAlert()
+    }
+
+    override suspend fun insertAlertWeather(alert: Alert) {
+        weatherLocalDataSource.insertAlert(alert)
+    }
+
+    override suspend fun deleteAlertWeather(alert: Alert) {
+        weatherLocalDataSource.deleteAlert(alert)
     }
 }
