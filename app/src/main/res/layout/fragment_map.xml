@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".map.view.MapFragment" >
+    xmlns:org.osmdroid.bonuspack.maps.ScaleBarOverlay="http://schemas.android.com/apk/res-auto"
+    tools:context=".map.view.MapFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,7 +14,10 @@
         <org.osmdroid.views.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:focusable="true"
+
+            />
 
         <Button
             android:id="@+id/btnAddFav"

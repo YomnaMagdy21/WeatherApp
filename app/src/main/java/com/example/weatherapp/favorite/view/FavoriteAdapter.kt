@@ -1,8 +1,10 @@
 package com.example.weatherapp.favorite.view
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,10 +35,23 @@ class FavoriteAdapter(var context: Context, var listener: OnFavoriteClickListene
         val current = getItem(position)
 
         holder.binding.city.text=current.city
-
-        holder.binding.favCardView.setOnClickListener{
-
+        holder.binding.cancel.setOnClickListener {
+            listener.onClickToRemove(current)
         }
+
+        if(current!=null) {
+            Log.i("TAG", "onBindViewHolder: ${current.city}")
+            holder.binding.favCardView.setOnClickListener {
+                (holder.itemView.context as? AppCompatActivity)?.let { activity ->
+                    listener.goToDetails(current)
+                }
+
+            }
+        }else{
+            Log.i("TAG", "onBindViewHolder: current nullll")
+        }
+
+
 //        holder.binding.tempDesc.text = current.temp.toString()
 //        holder.binding.tempNo.text = current.dt.toString()
 //        var iconName=current.weather[0].icon

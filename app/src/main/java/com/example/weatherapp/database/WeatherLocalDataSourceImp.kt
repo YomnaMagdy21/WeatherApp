@@ -18,8 +18,8 @@ class WeatherLocalDataSourceImp (context: Context):WeatherLocalDataSource {
         dao.insert(weatherResponse)
     }
 
-    override suspend fun delete(weatherResponse: WeatherResponse) {
-        dao.delete(weatherResponse)
+    override suspend fun deleteAll() {
+        dao.delete()
     }
 
     override fun getStoredWeather(): Flow<WeatherResponse> {

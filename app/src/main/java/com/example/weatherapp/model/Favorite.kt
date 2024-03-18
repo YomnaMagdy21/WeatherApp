@@ -2,6 +2,7 @@ package com.example.weatherapp.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "Favorite")
 data class Favorite(
@@ -14,7 +15,7 @@ data class Favorite(
 //    var list: List<WeatherData>?,
     @PrimaryKey
     var city: String
-){
+): Serializable {
 
    // constructor():this(0.0,0.0,City(1,"",null,"",1,1,1,1))
 }

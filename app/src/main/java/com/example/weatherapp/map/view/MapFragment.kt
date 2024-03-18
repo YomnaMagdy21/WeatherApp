@@ -5,6 +5,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
@@ -44,6 +46,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import java.io.IOException
 import java.util.Locale
 
@@ -113,6 +116,7 @@ class MapFragment : Fragment()  {
         binding.mapView.setMultiTouchControls(true)
         binding.mapView.setTileSource(TileSourceFactory.MAPNIK)
         binding.mapView.overlays.add(TapOverlay())
+
        // addPinToCurrentLocation()
 
         mapViewModelFactory= MapViewModelFactory(WeatherRepositoryImp.getInstance(

@@ -45,8 +45,8 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
         weatherLocalDataSource.insert(weatherResponse)
     }
 
-    override suspend fun deleteHomeWeather(weatherResponse: WeatherResponse) {
-        weatherLocalDataSource.delete(weatherResponse)
+    override suspend fun deleteHomeWeather() {
+        weatherLocalDataSource.deleteAll()
     }
 
     override fun getFavoriteWeather(): Flow<List<Favorite>> {

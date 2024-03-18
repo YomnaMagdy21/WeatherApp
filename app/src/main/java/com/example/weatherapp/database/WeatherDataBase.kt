@@ -11,7 +11,7 @@ import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherResponse
 
 
-@Database(entities =[WeatherResponse::class,Favorite::class, AlertData::class], version = 3 )
+@Database(entities =[WeatherResponse::class,Favorite::class, AlertData::class], version = 5 )
 @TypeConverters(WeatherDataConverter::class)
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDAO

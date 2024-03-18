@@ -9,7 +9,7 @@ interface WeatherRepository {
 
     fun getHomeWeather():Flow<WeatherResponse>
     suspend fun insertHomeWeather(weatherResponse: WeatherResponse)
-    suspend fun deleteHomeWeather(weatherResponse: WeatherResponse)
+    suspend fun deleteHomeWeather()
 
     fun getFavoriteWeather():Flow<List<Favorite>>
     suspend fun insertFavoriteWeather(favorite: Favorite)

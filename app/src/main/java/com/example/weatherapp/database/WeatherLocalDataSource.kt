@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherLocalDataSource {
 
     suspend fun insert(weatherResponse:WeatherResponse)
-    suspend fun delete(weatherResponse: WeatherResponse)
+    suspend fun deleteAll()
     fun getStoredWeather(): Flow<WeatherResponse>
 
     fun getStoredFavorite(): Flow<List<Favorite>>

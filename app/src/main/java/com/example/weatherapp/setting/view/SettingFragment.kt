@@ -7,16 +7,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat.recreate
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
+import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentSettingBinding
+import com.example.weatherapp.map.viewmaodel.MapViewModel
+import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
+import com.example.weatherapp.model.WeatherRepositoryImp
+import com.example.weatherapp.network.WeatherRemoteDataSourceImp
+import com.example.weatherapp.setting.viewmodel.SettingViewModel
+import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class SettingFragment : Fragment() {
 
     lateinit var binding : FragmentSettingBinding
-    private val languageFlow = MutableSharedFlow<String>() // Define MutableSharedFlow
+    private val languageFlow = MutableSharedFlow<String>()
+    lateinit var settingViewModel: SettingViewModel
+    lateinit var settingViewModelFactory: SettingViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,18 +37,36 @@ class SettingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(inflater, container, false)
+
+        settingViewModelFactory= SettingViewModelFactory(
+            WeatherRepositoryImp.getInstance(
+            WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
+            ))
+
+        settingViewModel= ViewModelProvider(this,settingViewModelFactory).get(SettingViewModel::class.java)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.arabic.setOnClickListener{
-            applyLanguageChanges("ar")
+        binding.arabic.setOnClickListener {
+             applyLanguageChanges("ar")
+           // settingViewModel.changeLanguage("ar")
         }
-        binding.english.setOnClickListener{
-            applyLanguageChanges("en")
+        binding.english.setOnClickListener {
+           // settingViewModel.changeLanguage("en")
+              applyLanguageChanges("en")
         }
+
+//        lifecycleScope.launch {
+//            settingViewModel.languageChangeFlow.collectLatest { language->
+//                updateAppContext(language)
+//
+//                recreate(requireActivity())
+//            }
+//        }
     }
 
     private fun saveLanguagePreference(context: Context, language: String) {
@@ -54,7 +85,7 @@ class SettingFragment : Fragment() {
     // Apply language changes when the user selects a language
     private fun applyLanguageChanges(language: String) {
         saveLanguagePreference(requireContext(), language)
-        emitLanguageChange(language) // Emit language change through MutableSharedFlow
+       // emitLanguageChange(language) // Emit language change through MutableSharedFlow
         updateAppContext(language)
     }
     private fun updateAppContext(language: String) {

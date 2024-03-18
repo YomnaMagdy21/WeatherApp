@@ -34,4 +34,18 @@ class FavoriteViewModel (private val _irepo: WeatherRepository): ViewModel(){
             .collect{
                 _favorite.value=UIState.Success(it)
             }            }
+
+     fun getWeather(lat:Double, lon:Double, exclude:String,units :String, lang:String){
+        viewModelScope.launch(Dispatchers.IO){
+            //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,lang,units))
+            _irepo.getWeather(lat,lon,exclude,units,lang)
+                .catch {
+                        e->
+                    _favorite.value= UIState.Failure(e)
+                }
+                .collect{
+                    _favorite.value= UIState.Success(it)
+                }
+        }
+    }
 }

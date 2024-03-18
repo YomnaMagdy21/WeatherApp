@@ -17,8 +17,8 @@ interface WeatherDAO {
     fun getCurrent(): Flow<WeatherResponse>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(weatherResponse: WeatherResponse)
-    @Delete
-    suspend fun delete(weatherResponse: WeatherResponse): Int
+    @Query("DELETE FROM Home")
+    suspend fun delete(): Int
 
     @Query("SELECT * FROM Favorite")
     fun getAllFavorite(): Flow<List<Favorite>>
