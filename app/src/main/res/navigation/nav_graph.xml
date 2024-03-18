@@ -30,4 +30,9 @@
         android:name="com.example.weatherapp.map.view.MapFragment"
         android:label="MapFrahment"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.weatherapp.home.view.StartFragment"
+        android:label="StartFragment"
+        tools:layout="@layout/fragment_start" />
 </navigation>

@@ -10,76 +10,80 @@ import androidx.room.PrimaryKey
 data class WeatherResponse(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
-    val lat: Double,
-    val lon: Double,
-    val timezone: String,
-    val timezone_offset: Long,
-    val list: List<WeatherData>,
-    val city: City
-)
+    var lat: Double,
+    var lon: Double,
+    var timezone: String,
+    var timezone_offset: Long,
+    var list: List<WeatherData>,
+    var city: City
+){
+
+}
+
+
 
 data class WeatherData(
-    val dt: Long,
-    val main: Main,
-    val weather: List<Weather>,
-    val clouds: Clouds,
-    val wind: Wind,
-    val visibility: Int,
-    val pop: Double,
-    val rain: Rain?,
-    val sys: Sys,
-    val dt_txt: String
+    var dt: Long,
+    var main: Main,
+    var weather: List<Weather>,
+    var clouds: Clouds,
+    var wind: Wind,
+    var visibility: Int,
+    var pop: Double,
+    var rain: Rain?,
+    var sys: Sys,
+    var dt_txt: String
 )
 
 data class Main(
-    val temp: Double,
-    val feels_like: Double,
-    val temp_min: Double,
-    val temp_max: Double,
-    val pressure: Int,
-    val sea_level: Int,
-    val grnd_level: Int,
-    val humidity: Int,
-    val temp_kf: Double
+    var temp: Double,
+    var feels_like: Double,
+    var temp_min: Double,
+    var temp_max: Double,
+    var pressure: Int,
+    var sea_level: Int,
+    var grnd_level: Int,
+    var humidity: Int,
+    var temp_kf: Double
 )
 
 data class Weather(
-    val id: Int,
-    val main: String,
-    val description: String,
-    val icon: String
+    var id: Int,
+    var main: String,
+    var description: String,
+    var icon: String
 )
 
 data class Clouds(
-    val all: Int
+    var all: Int
 )
 
 data class Wind(
-    val speed: Double,
-    val deg: Int,
-    val gust: Double
+    var speed: Double,
+    var deg: Int,
+    var gust: Double
 )
 
 data class Rain(
-    val `3h`: Double
+    var `3h`: Double
 )
 
 data class Sys(
-    val pod: String
+    var pod: String
 )
 
 data class City(
-    val id: Long,
-    val name: String,
-    val coord: Coord,
-    val country: String,
-    val population: Int,
-    val timezone: Int,
-    val sunrise: Long,
-    val sunset: Long
+    var id: Long,
+    var name: String,
+    var coord: Coord?,
+    var country: String,
+    var population: Int,
+    var timezone: Int,
+    var sunrise: Long,
+    var sunset: Long
 )
 
 data class Coord(
-    val lat: Double,
-    val lon: Double
+    var lat: Double,
+    var lon: Double
 )

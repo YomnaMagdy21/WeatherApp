@@ -10,11 +10,13 @@ import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.DayItemBinding
 import com.example.weatherapp.databinding.FavItemBinding
 import com.example.weatherapp.home.view.DayAdapter
+import com.example.weatherapp.model.Favorite
 
 import com.example.weatherapp.model.WeatherData
+import com.example.weatherapp.model.WeatherResponse
 
-class FavoriteAdapter(var context: Context):
-    ListAdapter<WeatherData, FavoriteAdapter.DayViewHolder>(DayDiffUtil()) {
+class FavoriteAdapter(var context: Context, var listener: OnFavoriteClickListener):
+    ListAdapter<Favorite, FavoriteAdapter.DayViewHolder>(DayDiffUtil()) {
 
 
     lateinit var binding: FavItemBinding
@@ -29,6 +31,12 @@ class FavoriteAdapter(var context: Context):
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val current = getItem(position)
+
+        holder.binding.city.text=current.city
+
+        holder.binding.favCardView.setOnClickListener{
+
+        }
 //        holder.binding.tempDesc.text = current.temp.toString()
 //        holder.binding.tempNo.text = current.dt.toString()
 //        var iconName=current.weather[0].icon
@@ -41,12 +49,12 @@ class FavoriteAdapter(var context: Context):
     }
 }
 
-class DayDiffUtil : DiffUtil.ItemCallback<WeatherData>() {
-    override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
-        return oldItem == newItem
+class DayDiffUtil : DiffUtil.ItemCallback<Favorite>() {
+    override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
+        return oldItem.city == newItem.city
     }
 
-    override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+    override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
         return newItem == oldItem
     }
 

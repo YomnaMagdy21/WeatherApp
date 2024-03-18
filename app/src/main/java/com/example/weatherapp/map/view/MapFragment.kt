@@ -17,29 +17,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.weatherapp.R
-import com.example.weatherapp.databinding.FragmentAlertBinding
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentMapBinding
+import com.example.weatherapp.map.viewmaodel.MapViewModel
+import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
+import com.example.weatherapp.model.City
+import com.example.weatherapp.model.Coord
+import com.example.weatherapp.model.Favorite
+import com.example.weatherapp.model.WeatherRepositoryImp
+import com.example.weatherapp.network.WeatherRemoteDataSourceImp
+import com.example.weatherapp.util.UIState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-
-import com.google.android.gms.maps.model.MarkerOptions
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
-import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -59,6 +58,11 @@ class MapFragment : Fragment()  {
     var locationRequestID = 5
     private lateinit var fusedClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    lateinit var mapViewModel: MapViewModel
+    lateinit var mapViewModelFactory: MapViewModelFactory
+      var lon:Double=1.0
+    var lat:Double=1.0
+     lateinit var favorite: Favorite
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,8 +115,75 @@ class MapFragment : Fragment()  {
         binding.mapView.overlays.add(TapOverlay())
        // addPinToCurrentLocation()
 
+        mapViewModelFactory= MapViewModelFactory(WeatherRepositoryImp.getInstance(
+            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
+
+        mapViewModel= ViewModelProvider(this,mapViewModelFactory).get(MapViewModel::class.java)
+
+
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        binding.btnAddFav.setOnClickListener {
+           mapViewModel.insertFavorite(favorite)
+        }
+
+//           lifecycleScope.launch {
+//               mapViewModel.favs.collectLatest { result ->
+//                   when (result) {
+//
+//                       is UIState.Success<*> -> {
+//                           val dataList = result.data as? Favorite
+//
+//
+//
+//
+//                               favorite = Favorite(lat,lon,dataList.city)
+////                       }else{
+////                               Toast.makeText(
+////                                   requireContext(),
+////                                   "Nothing1",
+////                                   Toast.LENGTH_LONG
+////                               ).show()
+////
+////                           }
+//
+//                           mapViewModel.insertFavorite(favorite)
+//
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "Inserted successfully",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                       is UIState.Failure -> {
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "there is problem in server",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                       else -> {
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "Nothing",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                   }
+//               }
+//               }
+
+
+
     }
 
 //    private fun addPinToCurrentLocation() {
@@ -193,27 +264,35 @@ class MapFragment : Fragment()  {
     }
 
 
+
+
     private inner class TapOverlay : Overlay() {
         override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
-            // Convert tap coordinates to GeoPoint
+
             val p = mapView.projection.fromPixels(e.x.toInt(), e.y.toInt())
 
-            // Remove existing pin marker
+
             binding.mapView.overlays.remove(pinMarker)
 
-            // Add a new pin marker at the tapped location
+
             pinMarker = Marker(mapView)
             pinMarker?.position = p as GeoPoint?
             binding.mapView.overlays.add(pinMarker)
-            binding.mapView.invalidate() // Refresh the map
+            binding.mapView.invalidate()
 
-            binding.addPinButton.setOnClickListener {
-               // reverseGeocode(p.latitude,p.longitude)
-                getAddress(p.latitude,p.longitude)
+            lat=p.latitude
+            lon=p.longitude
 
+         //   mapViewModel.getWeather(lon,lat,"","","")
 
-
-            }
+               getAddress(p.latitude,p.longitude)
+//            binding.btnAddFav.setOnClickListener {
+//
+//                getAddress(p.latitude,p.longitude)
+//
+//
+//
+//            }
 
             return true
         }
@@ -232,7 +311,9 @@ class MapFragment : Fragment()  {
                 val country= address.countryName
                 Log.i("TAG", "getAddress: $country ")
 
+                favorite=Favorite(lat,lon,city+" - "+country)
 
+              //  favorite=Favorite(lat,lon,City(1,city, Coord(lat,lon),country,1,1,1,1))
                 for (i in 0..address.maxAddressLineIndex) {
                     addressStringBuilder.append(address.getAddressLine(i)).append("\n")
                 }

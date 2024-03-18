@@ -12,65 +12,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnFrom"
-            android:layout_width="100dp"
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
-            android:backgroundTint="@color/lightBlue"
-
-            android:fontFamily="sans-serif"
-
-            android:inputType="text"
-            android:text="@string/from"
-            android:textColor="@color/white"
-            android:textSize="24sp"
+            android:layout_marginBottom="14dp"
+            android:text="@string/location"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/radioGroup"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnTo"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="24dp"
-
-
-            android:layout_marginEnd="32dp"
-
-            android:backgroundTint="@color/lightBlue"
-            android:fontFamily="sans-serif"
-            android:inputType="text"
-            android:text="@string/to"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnFrom"
             app:layout_constraintTop_toTopOf="parent" />
 
         <RadioGroup
             android:id="@+id/radioGroup"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
 
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="60dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/btnFrom">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:text="@string/map"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/gps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="70dp"
-                android:text="@string/alarm" />
-
-            <RadioButton
-                android:id="@+id/radioButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:text="@string/notifications" />
+                android:text="@string/gps"
+                android:textSize="16sp" />
         </RadioGroup>
 
         <androidx.appcompat.widget.AppCompatButton

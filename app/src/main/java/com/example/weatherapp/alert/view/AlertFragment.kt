@@ -50,7 +50,7 @@ class AlertFragment : Fragment() {
 
 
 
-    fun showDialogBox(){
+   private fun showDialogBox(){
         val dialog=Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)

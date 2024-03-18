@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.weatherapp.model.Alert
+import com.example.weatherapp.model.AlertData
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherResponse
 
 
-@Database(entities =[WeatherResponse::class,Favorite::class,Alert::class], version = 1 )
+@Database(entities =[WeatherResponse::class,Favorite::class, AlertData::class], version = 3 )
+@TypeConverters(WeatherDataConverter::class)
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDAO
     companion object{
@@ -19,6 +22,7 @@ abstract class WeatherDataBase : RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     ctx.applicationContext, WeatherDataBase::class.java, "weather_database")
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
 

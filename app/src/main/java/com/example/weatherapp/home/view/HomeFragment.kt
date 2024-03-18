@@ -1,5 +1,8 @@
 package com.example.weatherapp.home.view
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +22,7 @@ import com.example.weatherapp.CurrentWeather
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentHomeBinding
+import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 
@@ -41,6 +46,7 @@ class HomeFragment : Fragment() {
     lateinit var dayAdapter: DayAdapter
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
+    lateinit var bindingDialog:LocationAlertBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +80,7 @@ class HomeFragment : Fragment() {
 
         setUpRecyclerViewHour()
         setUpRecyclerViewDay()
+        showDialogBox()
 //        homeViewModel.weather.observe(requireActivity()){ days ->
 //            dayAdapter.submitList(days.list)
 //        }
@@ -228,8 +235,34 @@ class HomeFragment : Fragment() {
 
         }
 
+    private fun showDialogBox(){
+        val dialog= Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        // dialog.setContentView(R.layout.alert_dialog)
+        bindingDialog = LocationAlertBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        fun setUpRecyclerViewHour() {
+        bindingDialog.map.setOnClickListener {
+            Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
+        }
+        bindingDialog.gps.setOnClickListener {
+            Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
+
+        }
+        bindingDialog.btnSave.setOnClickListener {
+            Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
+            dialog.dismiss()
+
+
+        }
+        dialog.show()
+
+    }
+
+
+      private  fun setUpRecyclerViewHour() {
             hourAdapter = HourAdapter(requireActivity())
             binding.recViewHour.apply {
                 adapter = hourAdapter
@@ -239,7 +272,7 @@ class HomeFragment : Fragment() {
 
         }
 
-        fun setUpRecyclerViewDay() {
+      private  fun setUpRecyclerViewDay() {
             dayAdapter = DayAdapter(requireActivity())
             binding.recViewDay.apply {
                 adapter = dayAdapter
