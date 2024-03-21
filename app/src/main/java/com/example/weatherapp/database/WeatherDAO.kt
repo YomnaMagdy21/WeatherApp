@@ -15,7 +15,7 @@ interface WeatherDAO {
 
     @Query("SELECT * FROM Home")
     fun getCurrent(): Flow<WeatherResponse>
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(weatherResponse: WeatherResponse)
     @Query("DELETE FROM Home")
     suspend fun delete(): Int

@@ -18,17 +18,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentMapBinding
+import com.example.weatherapp.home.view.HomeFragment
+import com.example.weatherapp.home.viewmodel.HomeViewModel
+import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.viewmaodel.MapViewModel
 import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
 import com.example.weatherapp.model.City
 import com.example.weatherapp.model.Coord
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepositoryImp
+import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.UIState
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -66,6 +72,10 @@ class MapFragment : Fragment()  {
       var lon:Double=1.0
     var lat:Double=1.0
      lateinit var favorite: Favorite
+     lateinit var homeViewModel: HomeViewModel
+     lateinit var homeViewModelFactory: HomeViewModelFactory
+     lateinit var weatherResponse: WeatherResponse
+     lateinit var location:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +133,24 @@ class MapFragment : Fragment()  {
             WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
 
         mapViewModel= ViewModelProvider(this,mapViewModelFactory).get(MapViewModel::class.java)
+         location= arguments?.getString("loc").toString()
+        Log.i("TAG", "onCreateView:location: $location ")
 
+        homeViewModelFactory= HomeViewModelFactory(WeatherRepositoryImp.getInstance(
+            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
+
+        homeViewModel= ViewModelProvider(this,homeViewModelFactory).get(HomeViewModel::class.java)
+
+
+        if(location=="map"){
+            binding.btnAddFav.visibility = View.GONE
+            binding.btnAddHome.visibility = View.VISIBLE
+
+        }
+        else {
+            binding.btnAddFav.visibility = View.VISIBLE
+            binding.btnAddHome.visibility = View.GONE
+        }
 
 
         return binding.root
@@ -134,118 +161,43 @@ class MapFragment : Fragment()  {
 
 
         binding.btnAddFav.setOnClickListener {
-           mapViewModel.insertFavorite(favorite)
+            mapViewModel.insertFavorite(favorite)
         }
-
-//           lifecycleScope.launch {
-//               mapViewModel.favs.collectLatest { result ->
-//                   when (result) {
-//
-//                       is UIState.Success<*> -> {
-//                           val dataList = result.data as? Favorite
-//
-//
-//
-//
-//                               favorite = Favorite(lat,lon,dataList.city)
-////                       }else{
-////                               Toast.makeText(
-////                                   requireContext(),
-////                                   "Nothing1",
-////                                   Toast.LENGTH_LONG
-////                               ).show()
-////
-////                           }
-//
-//                           mapViewModel.insertFavorite(favorite)
-//
-//                           Toast.makeText(
-//                               requireContext(),
-//                               "Inserted successfully",
-//                               Toast.LENGTH_LONG
-//                           ).show()
-//                       }
-//
-//                       is UIState.Failure -> {
-//                           Toast.makeText(
-//                               requireContext(),
-//                               "there is problem in server",
-//                               Toast.LENGTH_LONG
-//                           ).show()
-//                       }
-//
-//                       else -> {
-//                           Toast.makeText(
-//                               requireContext(),
-//                               "Nothing",
-//                               Toast.LENGTH_LONG
-//                           ).show()
-//                       }
-//
-//                   }
-//               }
-//               }
-
-
 
     }
 
-//    private fun addPinToCurrentLocation() {
-//        val currentLocation = getCurrentLocationCoordinates()
-//
-//
-//        currentLocation?.let {
-//            val startPoint = GeoPoint(it.latitude, it.longitude)
-//            currentLocationMarker = Marker(binding.mapView)
-//            currentLocationMarker?.position = startPoint
-//            currentLocationMarker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-//            binding.mapView.overlays.add(currentLocationMarker)
-//            binding.mapView.controller.setCenter(startPoint)
-//        }
-//    }
-//    private fun getCurrentLocationCoordinates(): LatLng? {
-//
-//        return LatLng(37.42,-122.08)
-//    }
 
-//    override fun onMapReady(p0: GoogleMap) {
-//        val currentLocation = LatLng(37.42,-122.08 )
-//        p0.addMarker(MarkerOptions().position(currentLocation).title("Current Location"))
-//        p0.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
-//
-//    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+        override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
         ) {
-        } else {
-            getFreshLocation()
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+            } else {
+                getFreshLocation()
+            }
         }
-    }
 
-    @SuppressLint("MissingPermission")
-    fun getFreshLocation() {
-        fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        val locationRequest: LocationRequest = LocationRequest.Builder(1000).apply {
-            setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
-        }.build()
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                val lastLocation = locationResult.lastLocation
-                val currentLatitude = lastLocation?.latitude
-                val currentLongitude = lastLocation?.longitude
+        @SuppressLint("MissingPermission")
+        fun getFreshLocation() {
+            fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            val locationRequest: LocationRequest = LocationRequest.Builder(1000).apply {
+                setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+            }.build()
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val lastLocation = locationResult.lastLocation
+                    val currentLatitude = lastLocation?.latitude
+                    val currentLongitude = lastLocation?.longitude
 
 //
 //                val currentAddress = currentLatitude?.let {
@@ -257,39 +209,37 @@ class MapFragment : Fragment()  {
 //                }
 
 
+                }
             }
+
+            fusedClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.myLooper()
+            )
         }
 
-        fusedClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.myLooper()
-        )
-    }
+
+        private inner class TapOverlay : Overlay() {
+            override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
+
+                val p = mapView.projection.fromPixels(e.x.toInt(), e.y.toInt())
 
 
+                binding.mapView.overlays.remove(pinMarker)
 
 
-    private inner class TapOverlay : Overlay() {
-        override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
+                pinMarker = Marker(mapView)
+                pinMarker?.position = p as GeoPoint?
+                binding.mapView.overlays.add(pinMarker)
+                binding.mapView.invalidate()
 
-            val p = mapView.projection.fromPixels(e.x.toInt(), e.y.toInt())
+                lat = p.latitude
+                lon = p.longitude
 
+                //   mapViewModel.getWeather(lon,lat,"","","")
 
-            binding.mapView.overlays.remove(pinMarker)
-
-
-            pinMarker = Marker(mapView)
-            pinMarker?.position = p as GeoPoint?
-            binding.mapView.overlays.add(pinMarker)
-            binding.mapView.invalidate()
-
-            lat=p.latitude
-            lon=p.longitude
-
-         //   mapViewModel.getWeather(lon,lat,"","","")
-
-               getAddress(p.latitude,p.longitude)
+                getAddress(p.latitude, p.longitude)
 //            binding.btnAddFav.setOnClickListener {
 //
 //                getAddress(p.latitude,p.longitude)
@@ -298,47 +248,59 @@ class MapFragment : Fragment()  {
 //
 //            }
 
-            return true
-        }
-    }
-
-    private fun getAddress(latitude: Double, longitude: Double): String {
-        val addresses: List<Address>
-        val addressStringBuilder = StringBuilder()
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1)!!
-            if (addresses.isNotEmpty()) {
-                val address: Address = addresses[0]
-                val city = address.adminArea
-                Log.i("TAG", "getAddress: $city ")
-                val country= address.countryName
-                Log.i("TAG", "getAddress: $country ")
-
-                favorite=Favorite(lat,lon,city+" - "+country)
-
-              //  favorite=Favorite(lat,lon,City(1,city, Coord(lat,lon),country,1,1,1,1))
-                for (i in 0..address.maxAddressLineIndex) {
-                    addressStringBuilder.append(address.getAddressLine(i)).append("\n")
-                }
+                return true
             }
-        } catch (e: IOException) {
-            Log.e("Geocoder", " ${e.message}")
         }
 
-        return addressStringBuilder.toString()
-    }
+        private fun getAddress(latitude: Double, longitude: Double): String {
+            val addresses: List<Address>
+            val addressStringBuilder = StringBuilder()
 
+            try {
+                addresses = geocoder.getFromLocation(latitude, longitude, 1)!!
+                if (addresses.isNotEmpty()) {
+                    val address: Address = addresses[0]
+                    val city = address.adminArea
+                    Log.i("TAG", "getAddress: $city ")
+                    val country = address.countryName
+                    Log.i("TAG", "getAddress: $country ")
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MapFragment().apply {
-                arguments = Bundle().apply {
-
+                    favorite = Favorite(lat, lon, city + " - " + country)
+//                    weatherResponse= WeatherResponse(lat,lon,"",0, null,)
+                        if (location=="map") {
+                            binding.btnAddHome.setOnClickListener {
+                                Log.i("TAG", "getAddress: $city ")
+                            homeViewModel.getWeather(lat, lon, "", "", "")
+                                val home=HomeFragment.newInstance("map")
+                                val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                                transaction.replace(R.id.main, home)
+                                transaction.addToBackStack(null)
+                                transaction.commit()
+                           }
+                        }
+                    //  favorite=Favorite(lat,lon,City(1,city, Coord(lat,lon),country,1,1,1,1))
+                    for (i in 0..address.maxAddressLineIndex) {
+                        addressStringBuilder.append(address.getAddressLine(i)).append("\n")
+                    }
                 }
+            } catch (e: IOException) {
+                Log.e("Geocoder", " ${e.message}")
             }
-    }
+
+            return addressStringBuilder.toString()
+        }
+
+
+        companion object {
+            @JvmStatic
+            fun newInstance(loc: String) =
+                MapFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("loc", loc)
+
+                    }
+                }
+        }
 
 //    override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
 //       binding.mapView.overlays.remove(pinMarker)
@@ -388,12 +350,88 @@ class MapFragment : Fragment()  {
 //        })
 //    }
 
-    private fun parseLocationName(responseBody: String?): String? {
-        // Parse JSON response and extract location name
-        // Implement your logic to parse the JSON response and extract the location name
-        // For simplicity, I'm returning a placeholder value here
-        Log.i("TAG", "parseLocationName: $responseBody")
-        return responseBody
-    }
+        private fun parseLocationName(responseBody: String?): String? {
+            // Parse JSON response and extract location name
+            // Implement your logic to parse the JSON response and extract the location name
+            // For simplicity, I'm returning a placeholder value here
+            Log.i("TAG", "parseLocationName: $responseBody")
+            return responseBody
+        }
+        //           lifecycleScope.launch {
+//               mapViewModel.favs.collectLatest { result ->
+//                   when (result) {
+//
+//                       is UIState.Success<*> -> {
+//                           val dataList = result.data as? Favorite
+//
+//
+//
+//
+//                               favorite = Favorite(lat,lon,dataList.city)
+////                       }else{
+////                               Toast.makeText(
+////                                   requireContext(),
+////                                   "Nothing1",
+////                                   Toast.LENGTH_LONG
+////                               ).show()
+////
+////                           }
+//
+//                           mapViewModel.insertFavorite(favorite)
+//
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "Inserted successfully",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                       is UIState.Failure -> {
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "there is problem in server",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                       else -> {
+//                           Toast.makeText(
+//                               requireContext(),
+//                               "Nothing",
+//                               Toast.LENGTH_LONG
+//                           ).show()
+//                       }
+//
+//                   }
+//               }
+//               }
+
+
+    //}
+
+//    private fun addPinToCurrentLocation() {
+//        val currentLocation = getCurrentLocationCoordinates()
+//
+//
+//        currentLocation?.let {
+//            val startPoint = GeoPoint(it.latitude, it.longitude)
+//            currentLocationMarker = Marker(binding.mapView)
+//            currentLocationMarker?.position = startPoint
+//            currentLocationMarker?.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+//            binding.mapView.overlays.add(currentLocationMarker)
+//            binding.mapView.controller.setCenter(startPoint)
+//        }
+//    }
+//    private fun getCurrentLocationCoordinates(): LatLng? {
+//
+//        return LatLng(37.42,-122.08)
+//    }
+
+//    override fun onMapReady(p0: GoogleMap) {
+//        val currentLocation = LatLng(37.42,-122.08 )
+//        p0.addMarker(MarkerOptions().position(currentLocation).title("Current Location"))
+//        p0.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
+//
+//    }
 
 }

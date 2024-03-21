@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -27,6 +28,8 @@ class StartFragment : Fragment() {
     lateinit var bindingDialog:LocationAlertBinding
     lateinit var navController: NavController
     lateinit var bindingMain: ActivityMainBinding
+    lateinit var location:String
+    lateinit var fragment: Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -39,8 +42,10 @@ class StartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         binding = FragmentStartBinding.inflate(inflater, container, false)
           showDialogBox()
+
 
         return binding.root    }
 
@@ -56,14 +61,25 @@ class StartFragment : Fragment() {
 
         bindingDialog.map.setOnClickListener {
             Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
+            location="map"
+            fragment = MapFragment.newInstance(location)
+
         }
         bindingDialog.gps.setOnClickListener {
             Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
+            location="gps"
+            fragment=HomeFragment.newInstance(location)
 
         }
         bindingDialog.btnSave.setOnClickListener {
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
             dialog.dismiss()
+            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.main, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+
+
 
 //            bindingMain = ActivityMainBinding.inflate(layoutInflater)
 //
@@ -83,9 +99,18 @@ class StartFragment : Fragment() {
 //
 //            }
         }
+
         dialog.show()
 
     }
+
+//    fun passLocation(loc:String){
+//        val fragmentB = HomeFragment.newInstance(loc)
+//        val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.main, fragmentB)
+//        transaction.addToBackStack(null)
+//        transaction.commit()
+//    }
 
     companion object {
             @JvmStatic

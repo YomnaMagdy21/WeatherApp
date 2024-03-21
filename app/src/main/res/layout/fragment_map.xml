@@ -30,6 +30,17 @@
             android:backgroundTint="@color/lightBlue"
             android:text="@string/add_to_fav" />
 
+        <Button
+            android:id="@+id/btnAddHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="66dp"
+
+            android:backgroundTint="@color/lightBlue"
+            android:text="@string/set_location" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

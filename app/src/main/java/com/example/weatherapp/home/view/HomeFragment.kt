@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,9 +31,13 @@ import com.example.weatherapp.CurrentWeather
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentHomeBinding
+import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
+import com.example.weatherapp.favorite.view.FavDetailsFragment
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+import com.example.weatherapp.map.view.MapFragment
+import com.example.weatherapp.model.Favorite
 
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
@@ -63,19 +68,19 @@ class HomeFragment : Fragment() {
     lateinit var dayAdapter: DayAdapter
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
-    lateinit var bindingDialog:LocationAlertBinding
+    lateinit var bindingDialog: LocationAlertBinding
     lateinit var geocoder: Geocoder
     private lateinit var fusedClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     var locationRequestID = 5
-    private var isFailure:Boolean=true
-    var isSuccess:Boolean=true
-    var currentLatitude =37.4220936
-    var currentLongitude =-122.083922
-    lateinit var languageCode :String
+    private var isFailure: Boolean = true
+    var isSuccess: Boolean = true
+    var currentLatitude = 37.4220936
+    var currentLongitude = -122.083922
+    lateinit var languageCode: String
     var weatherRequested = false
     private var previousLanguageCode: String? = null
-
+    lateinit var bindingMap: FragmentMapBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +95,8 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        bindingMap = FragmentMapBinding.inflate(inflater, container, false)
 
         geocoder = Geocoder(requireContext(), Locale.getDefault())
 
@@ -155,18 +162,26 @@ class HomeFragment : Fragment() {
 //            weatherRequested = true
 //        }
 
-     //   homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", "ar")
-
+        //  homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", "en")
 
 
         //  getFreshLocation()
-       // showDialogBox()
+        // showDialogBox()
 //        homeViewModel.weather.observe(requireActivity()){ days ->
 //            dayAdapter.submitList(days.list)
 //        }
-        if(NetworkConnection.checkNetworkConnection(requireContext())) {
+        val location = arguments?.getString("loc")
+        Log.i("TAG", "onViewCreated:loc $location ")
+        if (NetworkConnection.checkNetworkConnection(requireContext())) {
+            if (location == "map") {
+                bindingMap.btnAddFav.visibility = View.GONE
+                bindingMap.btnAddHome.visibility = View.VISIBLE
+                // homeViewModel.getWeather()
+            } else {
+
+            }
             Log.i("TAG", "onViewCreated: there is internet")
-            homeViewModel.deleteData()
+            //   homeViewModel.deleteData()
             lifecycleScope.launch {
                 homeViewModel.weather.collectLatest { result ->
                     when (result) {
@@ -182,68 +197,31 @@ class HomeFragment : Fragment() {
                             binding.recViewHour.visibility = View.VISIBLE
                             binding.recViewDay.visibility = View.VISIBLE
                             binding.cardView.visibility = View.VISIBLE
-                          //  getFreshLocation()
+                            //  getFreshLocation()
                             val dataList = result.data as? WeatherResponse
 
-                            Log.i("TAG", "onViewCreatedNetwork: $dataList?.timezone")
+                            setUI(dataList)
 
-                            val daysToShow = mutableSetOf<String>()
-                            dataList?.list.let { weatherList ->
-                                val distinctWeatherList = weatherList?.filter { weatherData ->
-                                    val day = weatherData.dt_txt.split(" ")
-                                    if (daysToShow.contains(day[0])) {
-                                        false
-                                    } else {
-                                        daysToShow.add(day[0])
-                                        true
-                                    }
-                                }?.take(5)
 
-                                dayAdapter.submitList(distinctWeatherList)
+//                               dataList?.let { weatherResponse ->
+//                                   homeViewModel.insertData(weatherResponse)
+//                                   Log.i("TAG", "onViewCreated: Inserteddddd")
+//                               }
+                            if (dataList != null) {
+                                homeViewModel.insertData(dataList)
                             }
-                            dataList?.list.let { weatherList ->
-                                val distinctWeatherList = weatherList?.filter { weatherData ->
-                                    val hour = weatherData.dt_txt.split(" ")
-                                    if (daysToShow.contains(hour[1])) {
-                                        false
-                                    } else {
-                                        daysToShow.add(hour[1])
-                                        true
-                                    }
-                                }
-
-                                hourAdapter.submitList(distinctWeatherList)
-                            }
-
-
-
-                            Log.i("TAG", "onViewCreated: $dataList")
-                            //  hourAdapter.submitList(dataList?.list)
-                            // dayAdapter.submitList(dataList?.list)
-//                        //val current=result.data as? CurrentWeather
-
-                                updateUI(dataList)
-
-
-                               dataList?.let { weatherResponse ->
-                                   homeViewModel.insertData(weatherResponse)
-                                   Log.i("TAG", "onViewCreated: Inserteddddd")
-                               }
-                           // Log.i("TAG", "onViewCreated: Inserteddddd")
-
-//
+                            // Log.i("TAG", "onViewCreated: Inserteddddd")
 
                         }
 
-
                         else -> {
                             binding.progBar.visibility = View.GONE
-                           // if(isSuccess) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "there is problem in server",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            // if(isSuccess) {
+                            Toast.makeText(
+                                requireContext(),
+                                "there is problem in server",
+                                Toast.LENGTH_LONG
+                            ).show()
 //                                isSuccess=false
 //                            }
 
@@ -251,7 +229,7 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-        }else {
+        } else {
             Log.i("TAG", "onViewCreated: there is no internet")
 
             homeViewModel.getLocalData()
@@ -272,62 +250,21 @@ class HomeFragment : Fragment() {
                             binding.cardView.visibility = View.VISIBLE
 
                             val dataList = result.data as? WeatherResponse
-                            Log.i("TAG", "onViewCreatedDatabase: $dataList?.timezone")
-//                           val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-//                           val dateTime =
-//                               LocalDateTime.parse(dataList?.list?.get(0)?.dt_txt, formatter)
-//                           val date = dateTime.toLocalDate()
-                            val daysToShow = mutableSetOf<String>()
-                            dataList?.list.let { weatherList ->
-                                val distinctWeatherList = weatherList?.filter { weatherData ->
-                                    val day = weatherData.dt_txt.split(" ")
-                                    if (daysToShow.contains(day[0])) {
-                                        false
-                                    } else {
-                                        daysToShow.add(day[0])
-                                        true
-                                    }
-                                }?.take(5)
 
-                                dayAdapter.submitList(distinctWeatherList)
-                            }
-                            dataList?.list.let { weatherList ->
-                                val distinctWeatherList = weatherList?.filter { weatherData ->
-                                    val hour = weatherData.dt_txt.split(" ")
-                                    if (daysToShow.contains(hour[1])) {
-                                        false
-                                    } else {
-                                        daysToShow.add(hour[1])
-                                        true
-                                    }
-                                }
-
-                                hourAdapter.submitList(distinctWeatherList)
-                            }
-
-
-
-                            Log.i("TAG", "onViewCreated: $dataList")
-                            //  hourAdapter.submitList(dataList?.list)
-                            // dayAdapter.submitList(dataList?.list)
-//                        //val current=result.data as? CurrentWeather
                             if (dataList != null) {
-                                updateUI(dataList)
+                                setUI(dataList)
                             }
-
-//
-
                         }
 
 
                         else -> {
-                          //  if(isFailure) {
-                                binding.progBar.visibility = View.GONE
-                                Toast.makeText(
-                                    requireContext(),
-                                    "there is problem in Network connection",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            //  if(isFailure) {
+                            binding.progBar.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "there is problem in Network connection",
+                                Toast.LENGTH_LONG
+                            ).show()
 //                                isFailure=false
 //                            }
 
@@ -340,14 +277,24 @@ class HomeFragment : Fragment() {
 
 
     }
+
     override fun onResume() {
         super.onResume()
+//
+//        if (!weatherRequested) {
+//            getFreshLocation()
+//            weatherRequested = true
+//        }
+        val currentLanguageCode = Locale.getDefault().language
+        // Check if the language code has changed since the last call
 
-        if (!weatherRequested) {
-            getFreshLocation()
-            weatherRequested = true
+        //  previousLanguageCode = currentLanguageCode
+        if (currentLanguageCode == "ar") {
+            homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", currentLanguageCode)
         }
+
     }
+
     private fun getLanguagePreference(context: Context): String {
         val languageCode = Locale.getDefault().language
         val sharedPref = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -355,7 +302,36 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun updateUI(dataList: WeatherResponse?) {
+    private fun setUI(dataList: WeatherResponse?) {
+        val daysToShow = mutableSetOf<String>()
+        dataList?.list.let { weatherList ->
+            val distinctWeatherList = weatherList?.filter { weatherData ->
+                val day = weatherData.dt_txt.split(" ")
+                if (daysToShow.contains(day[0])) {
+                    false
+                } else {
+                    daysToShow.add(day[0])
+                    true
+                }
+            }?.take(5)
+
+            dayAdapter.submitList(distinctWeatherList)
+        }
+        dataList?.list.let { weatherList ->
+            val distinctWeatherList = weatherList?.filter { weatherData ->
+                val hour = weatherData.dt_txt.split(" ")
+                if (daysToShow.contains(hour[1])) {
+                    false
+                } else {
+                    daysToShow.add(hour[1])
+                    true
+                }
+            }
+
+            hourAdapter.submitList(distinctWeatherList)
+        }
+
+
         binding.city.text = dataList?.city?.name
         binding.desc.text = dataList?.list?.get(0)?.weather?.get(0)?.description
         val iconName = dataList?.list?.get(0)?.weather?.get(0)?.icon
@@ -371,8 +347,8 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun showDialogBox(){
-        val dialog= Dialog(requireContext())
+    private fun showDialogBox() {
+        val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
         // dialog.setContentView(R.layout.alert_dialog)
@@ -381,10 +357,10 @@ class HomeFragment : Fragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         bindingDialog.map.setOnClickListener {
-            Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "map", Toast.LENGTH_LONG).show()
         }
         bindingDialog.gps.setOnClickListener {
-            Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "gps", Toast.LENGTH_LONG).show()
 
         }
         bindingDialog.btnSave.setOnClickListener {
@@ -396,6 +372,7 @@ class HomeFragment : Fragment() {
         dialog.show()
 
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -415,108 +392,125 @@ class HomeFragment : Fragment() {
             getFreshLocation()
         }
     }
-//    @SuppressLint("MissingPermission")
-//    fun getFreshLocation() {
-//        fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-//        val locationRequest: LocationRequest = LocationRequest.Builder(100000000000).apply {
-//            setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
-//        }.build()
-//        locationCallback = object : LocationCallback() {
-//            override fun onLocationResult(locationResult: LocationResult) {
-//                val lastLocation = locationResult.lastLocation
-//                if(lastLocation != null) {
-//                     currentLatitude = lastLocation.latitude
-//                     currentLongitude = lastLocation.longitude
+
+    @SuppressLint("MissingPermission")
+    fun getFreshLocation() {
+        fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        val locationRequest: LocationRequest = LocationRequest.Builder(100000000000).apply {
+            setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+        }.build()
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val lastLocation = locationResult.lastLocation
+                if (lastLocation != null) {
+                    currentLatitude = lastLocation.latitude
+                    currentLongitude = lastLocation.longitude
+
+//                    val languageCode = Locale.getDefault().language
+                    //  val lang=getLanguagePreference(requireContext())
+                    val languageCode = Locale.getDefault().language
+                    Log.i("TAG", "onCreateView: lang code is $languageCode ")
+
+
+                    homeViewModel.getWeather(
+                        currentLatitude,
+                        currentLongitude,
+                        "",
+                        "",
+                        languageCode
+                    )
+
+                    //   Log.i("TAG", "onViewCreated: language is $lang")
+
+                }
+
+            }
+        }
+
+        fusedClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()
+        )
+    }
+//@SuppressLint("MissingPermission")
+//fun getFreshLocation() {
+//    if (::fusedClient.isInitialized && ::locationCallback.isInitialized) {
+//        // If fusedClient and locationCallback are already initialized,
+//        // remove any existing location updates to prevent duplicates
+//        fusedClient.removeLocationUpdates(locationCallback)
+//    }
 //
-////                    val languageCode = Locale.getDefault().language
-//                  //  val lang=getLanguagePreference(requireContext())
-//                   val languageCode=Locale.getDefault().language
-//                    Log.i("TAG", "onCreateView: lang code is $languageCode ")
+//    fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+//    val locationRequest: LocationRequest = LocationRequest.create().apply {
+//        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+//        interval = 100000000000 // Update interval in milliseconds (set to a large value)
+//    }
 //
+//    locationCallback = object : LocationCallback() {
+//        override fun onLocationResult(locationResult: LocationResult) {
+//            val lastLocation = locationResult.lastLocation
+//            if (lastLocation != null) {
+//                currentLatitude = lastLocation.latitude
+//                currentLongitude = lastLocation.longitude
 //
-//                    homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", languageCode)
-//
-//                 //   Log.i("TAG", "onViewCreated: language is $lang")
-//
-//                }
-//
+////                val currentLanguageCode = Locale.getDefault().language
+////                // Check if the language code has changed since the last call
+////                if (currentLanguageCode != previousLanguageCode) {
+////                    previousLanguageCode = currentLanguageCode
+////                    homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", currentLanguageCode)
+////                }
 //            }
 //        }
-//
-//        fusedClient.requestLocationUpdates(
-//            locationRequest,
-//            locationCallback,
-//            Looper.myLooper()
-//        )
 //    }
-@SuppressLint("MissingPermission")
-fun getFreshLocation() {
-    if (::fusedClient.isInitialized && ::locationCallback.isInitialized) {
-        // If fusedClient and locationCallback are already initialized,
-        // remove any existing location updates to prevent duplicates
-        fusedClient.removeLocationUpdates(locationCallback)
-    }
 
-    fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-    val locationRequest: LocationRequest = LocationRequest.create().apply {
-        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        interval = 100000000000 // Update interval in milliseconds (set to a large value)
-    }
-
-    locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val lastLocation = locationResult.lastLocation
-            if (lastLocation != null) {
-                currentLatitude = lastLocation.latitude
-                currentLongitude = lastLocation.longitude
-
-                val currentLanguageCode = Locale.getDefault().language
-                // Check if the language code has changed since the last call
-                if (currentLanguageCode != previousLanguageCode) {
-                    previousLanguageCode = currentLanguageCode
-                    homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", currentLanguageCode)
-                }
-            }
-        }
-    }
-
-    // Request location updates
-    fusedClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-}
+//    // Request location updates
+//    fusedClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+//}
 
 
-
-    private  fun setUpRecyclerViewHour() {
-            hourAdapter = HourAdapter(requireActivity())
-            binding.recViewHour.apply {
-                adapter = hourAdapter
-                layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-
-            }
+    private fun setUpRecyclerViewHour() {
+        hourAdapter = HourAdapter(requireActivity())
+        binding.recViewHour.apply {
+            adapter = hourAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
         }
 
-      private  fun setUpRecyclerViewDay() {
-            dayAdapter = DayAdapter(requireActivity())
-            binding.recViewDay.apply {
-                adapter = dayAdapter
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-
-            }
-
-        }
     }
 
+    private fun setUpRecyclerViewDay() {
+        dayAdapter = DayAdapter(requireActivity())
+        binding.recViewDay.apply {
+            adapter = dayAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-//        fun getCurrent() {
+        }
+
+    }
+//    companion object {
+//        @JvmStatic
+//        fun newInstance(favorite: Favorite) =
+//            FavDetailsFragment().apply {
+//                arguments = Bundle().apply {
+//                    putSerializable("favorite", favorite)
 //
-//        }
-//        companion object {
-//            fun newInstance(param1: String, param2: String) =
-//                HomeFragment().apply {
-//                    arguments = Bundle().apply {
-//
-//                    }
 //                }
-//        }
+//            }
 //    }
+//}
+
+
+
+        fun getCurrent() {
+
+        }
+        companion object {
+            fun newInstance(location:String) =
+                HomeFragment().apply {
+                    arguments = Bundle().apply {
+                     putString("loc",location)
+                    }
+                }
+        }
+    }
