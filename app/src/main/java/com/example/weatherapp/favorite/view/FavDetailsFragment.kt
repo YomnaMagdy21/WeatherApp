@@ -27,6 +27,7 @@ import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.NetworkConnection
+import com.example.weatherapp.util.SharedPreference
 import com.example.weatherapp.util.UIState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +47,8 @@ class FavDetailsFragment : Fragment() {
     lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
+    lateinit var  unit:String
+    lateinit var unitOfWindSpeed:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,9 +75,10 @@ class FavDetailsFragment : Fragment() {
 
         Log.i(TAG, "onCreateView: ${favorite?.city}")
         val currentLanguageCode = Locale.getDefault().language
+        unit= SharedPreference.getUnit(requireContext())
 
         if (favorite != null) {
-            favoriteViewModel.getWeather(favorite.lat,favorite.lon,"","",currentLanguageCode)
+            favoriteViewModel.getWeather(favorite.lat,favorite.lon,"",unit,currentLanguageCode)
             Log.i(TAG, "onCreateView: ${favorite.city}")
         }
         else{
@@ -240,19 +244,33 @@ class FavDetailsFragment : Fragment() {
         Glide.with(requireContext())
             .load("https://openweathermap.org/img/wn/$iconName@2x.png")
             .into(binding.icon)
-        binding.temp.text = dataList?.list?.get(0)?.main?.temp.toString()
+     if(unit=="metric") {
+         binding.temp.text = dataList?.list?.get(0)?.main?.temp.toString()+"°C"
+     }else if(unit=="imperial"){
+         binding.temp.text = dataList?.list?.get(0)?.main?.temp.toString()+"°F"
 
+     }
+     else{
+         binding.temp.text = dataList?.list?.get(0)?.main?.temp.toString()+"°K"
+
+     }
         binding.date.text = dataList?.list?.get(0)?.dt_txt
         //date.toString()
-        binding.pressure.text =
-            dataList?.list?.get(0)?.main?.pressure.toString()
-        binding.humidity.text =
-            dataList?.list?.get(0)?.main?.humidity.toString()
-        binding.wind.text = dataList?.list?.get(0)?.wind?.speed.toString()
-        binding.clouds.text = dataList?.list?.get(0)?.clouds?.all.toString()
+     binding.pressure.text = dataList?.list?.get(0)?.main?.pressure.toString()+" hpa"
+     binding.humidity.text = dataList?.list?.get(0)?.main?.humidity.toString()+" %"
+     unitOfWindSpeed=SharedPreference.getWindUnit(requireContext())
+     if(unitOfWindSpeed=="Imperial"){
+         var milePerSec=(dataList?.list?.get(0)?.wind?.speed)
+         var value= milePerSec?.times(2.237)?.let { String.format("%.2f", it) }
+         binding.wind.text=value.toString()+" m/h"
+     }else{
+         binding.wind.text = dataList?.list?.get(0)?.wind?.speed.toString()+" m/s"
+
+     }
+     binding.clouds.text = dataList?.list?.get(0)?.clouds?.all.toString()+" %"
 
 
-    }
+ }
 
 
 

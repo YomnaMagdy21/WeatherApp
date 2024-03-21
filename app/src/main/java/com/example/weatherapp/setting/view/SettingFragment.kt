@@ -2,6 +2,7 @@ package com.example.weatherapp.setting.view
 
 import android.content.Context
 import android.os.Bundle
+import android.provider.Settings.System.putString
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,12 +15,14 @@ import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentSettingBinding
+import com.example.weatherapp.home.view.HomeFragment
 import com.example.weatherapp.map.viewmaodel.MapViewModel
 import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.setting.viewmodel.SettingViewModel
 import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
+import com.example.weatherapp.util.SharedPreference
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,16 +49,19 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        settingViewModelFactory= SettingViewModelFactory(
+        settingViewModelFactory = SettingViewModelFactory(
             WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
-            ))
+                WeatherRemoteDataSourceImp.getInstance(),
+                WeatherLocalDataSourceImp(requireContext())
+            )
+        )
 
-        settingViewModel= ViewModelProvider(this,settingViewModelFactory).get(SettingViewModel::class.java)
+        settingViewModel =
+            ViewModelProvider(this, settingViewModelFactory).get(SettingViewModel::class.java)
 
 
         binding.arabic.setOnClickListener {
-           settingViewModel.changeLanguage("ar")
+            settingViewModel.changeLanguage("ar")
 
         }
         binding.english.setOnClickListener {
@@ -63,8 +69,28 @@ class SettingFragment : Fragment() {
 
         }
 
+        binding.celsius.setOnClickListener {
+            SharedPreference.saveUnit(requireContext(),"metric")
+
+        }
+        binding.fahrenheit.setOnClickListener {
+            SharedPreference.saveUnit(requireContext(),"imperial")
+
+        }
+        binding.kelvin.setOnClickListener {
+            SharedPreference.saveUnit(requireContext(),"standard")
+
+        }
+        binding.mps.setOnClickListener {
+            SharedPreference.saveWindUnit(requireContext(),"Metric")
+
+        }
+        binding.mph.setOnClickListener {
+               SharedPreference.saveWindUnit(requireContext(),"Imperial")
+        }
+
         lifecycleScope.launch {
-            settingViewModel.languageChangeFlow.collect{ language ->
+            settingViewModel.languageChangeFlow.collect { language ->
                 Log.i("TAG", "onViewCreated: language $language")
                 val locale = Locale(language)
                 Locale.setDefault(locale)
@@ -73,9 +99,20 @@ class SettingFragment : Fragment() {
                 resources.updateConfiguration(config, resources.displayMetrics)
 
 
-               recreate(requireActivity())            }
+                recreate(requireActivity())
+            }
         }
+    }
 
+
+        companion object {
+            fun newInstance(location:String) =
+                SettingFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("units",location)
+                    }
+                }
+        }
     }
 
 
@@ -106,4 +143,4 @@ class SettingFragment : Fragment() {
 //    }
 
 
-}
+

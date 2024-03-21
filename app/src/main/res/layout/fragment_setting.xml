@@ -94,7 +94,7 @@
             android:layout_height="match_parent">
 
             <RadioButton
-                android:id="@+id/radioButton8"
+                android:id="@+id/mps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_horizontal"
@@ -102,7 +102,7 @@
                 android:textColor="@color/black" />
 
             <RadioButton
-                android:id="@+id/radioButton9"
+                android:id="@+id/mph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start|center_horizontal"
@@ -225,7 +225,7 @@
             android:layout_height="match_parent">
 
             <RadioButton
-                android:id="@+id/radioButton10"
+                android:id="@+id/celsius"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_horizontal"
@@ -233,14 +233,14 @@
                 android:textColor="@color/black" />
 
             <RadioButton
-                android:id="@+id/radioButton11"
+                android:id="@+id/fahrenheit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start|center_horizontal"
                 android:text="@string/fahrenheit" />
 
             <RadioButton
-                android:id="@+id/radioButton5"
+                android:id="@+id/kelvin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
