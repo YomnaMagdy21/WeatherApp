@@ -20,6 +20,7 @@ import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentStartBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.map.view.MapFragment
+import com.example.weatherapp.util.SharedPreference
 
 
 class StartFragment : Fragment() {
@@ -63,12 +64,14 @@ class StartFragment : Fragment() {
             Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
             location="map"
             fragment = MapFragment.newInstance(location)
+            SharedPreference.saveLocation(requireContext(),"map")
 
         }
         bindingDialog.gps.setOnClickListener {
             Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
             location="gps"
             fragment=HomeFragment.newInstance(location)
+            SharedPreference.saveLocation(requireContext(),"gps")
 
         }
         bindingDialog.btnSave.setOnClickListener {

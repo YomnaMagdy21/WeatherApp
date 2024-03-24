@@ -109,7 +109,7 @@ class FavDetailsFragment : Fragment() {
 
         setUpRecyclerViewDay()
         setUpRecyclerViewHour()
-        if (NetworkConnection.checkNetworkConnection(requireContext())) {
+//        if (NetworkConnection.checkNetworkConnection(requireContext())) {
 //            homeViewModel.deleteData()
             lifecycleScope.launch {
                 favoriteViewModel.favorites.collectLatest { result ->
@@ -156,52 +156,52 @@ class FavDetailsFragment : Fragment() {
                     }
                 }
             }
-        }else{
-
-                Log.i("TAG", "onViewCreated: there is no internet")
-
-                homeViewModel.getLocalData()
-                lifecycleScope.launch {
-                    homeViewModel.weather.collectLatest { result ->
-                        when (result) {
-                            is UIState.Loading -> {
-                                binding.progBar.visibility = View.VISIBLE
-                                binding.recViewHour.visibility = View.GONE
-                                binding.recViewDay.visibility = View.GONE
-                                binding.cardView.visibility = View.GONE
-                            }
-
-                            is UIState.Success<*> -> {
-                                binding.progBar.visibility = View.GONE
-                                binding.recViewHour.visibility = View.VISIBLE
-                                binding.recViewDay.visibility = View.VISIBLE
-                                binding.cardView.visibility = View.VISIBLE
-
-                                val dataList = result.data as? WeatherResponse
-
-                                if (dataList != null) {
-                                    setUI(dataList)
-                                }
-                            }
-
-
-                            else -> {
-                                //  if(isFailure) {
-                                binding.progBar.visibility = View.GONE
-                                Toast.makeText(
-                                    requireContext(),
-                                    "there is problem in Network connection",
-                                    Toast.LENGTH_LONG
-                                ).show()
-//                                isFailure=false
+//        }else{
+//
+//                Log.i("TAG", "onViewCreated: there is no internet")
+//
+//                homeViewModel.getLocalData()
+//                lifecycleScope.launch {
+//                    homeViewModel.weather.collectLatest { result ->
+//                        when (result) {
+//                            is UIState.Loading -> {
+//                                binding.progBar.visibility = View.VISIBLE
+//                                binding.recViewHour.visibility = View.GONE
+//                                binding.recViewDay.visibility = View.GONE
+//                                binding.cardView.visibility = View.GONE
 //                            }
-
-                            }
-                        }
-                    }
-                }
-
-            }
+//
+//                            is UIState.Success<*> -> {
+//                                binding.progBar.visibility = View.GONE
+//                                binding.recViewHour.visibility = View.VISIBLE
+//                                binding.recViewDay.visibility = View.VISIBLE
+//                                binding.cardView.visibility = View.VISIBLE
+//
+//                                val dataList = result.data as? WeatherResponse
+//
+//                                if (dataList != null) {
+//                                    setUI(dataList)
+//                                }
+//                            }
+//
+//
+//                            else -> {
+//                                //  if(isFailure) {
+//                                binding.progBar.visibility = View.GONE
+//                                Toast.makeText(
+//                                    requireContext(),
+//                                    "there is problem in Network connection",
+//                                    Toast.LENGTH_LONG
+//                                ).show()
+////                                isFailure=false
+////                            }
+//
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
 
 
     }

@@ -5,7 +5,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -16,12 +15,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentMapBinding
@@ -30,13 +26,11 @@ import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.viewmaodel.MapViewModel
 import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
-import com.example.weatherapp.model.City
-import com.example.weatherapp.model.Coord
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
-import com.example.weatherapp.util.UIState
+import com.example.weatherapp.util.SharedPreference
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -44,15 +38,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
-import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import java.io.IOException
 import java.util.Locale
 
@@ -76,6 +67,9 @@ class MapFragment : Fragment()  {
      lateinit var homeViewModelFactory: HomeViewModelFactory
      lateinit var weatherResponse: WeatherResponse
      lateinit var location:String
+     lateinit var unit:String
+     lateinit var language:String
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,7 +127,9 @@ class MapFragment : Fragment()  {
             WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
 
         mapViewModel= ViewModelProvider(this,mapViewModelFactory).get(MapViewModel::class.java)
-         location= arguments?.getString("loc").toString()
+         location= SharedPreference.getLocation(requireContext())
+        unit=SharedPreference.getUnit(requireContext())
+        language=Locale.getDefault().language
         Log.i("TAG", "onCreateView:location: $location ")
 
         homeViewModelFactory= HomeViewModelFactory(WeatherRepositoryImp.getInstance(
@@ -267,15 +263,18 @@ class MapFragment : Fragment()  {
 
                     favorite = Favorite(lat, lon, city + " - " + country)
 //                    weatherResponse= WeatherResponse(lat,lon,"",0, null,)
-                        if (location=="map") {
+                    SharedPreference.saveLat(requireContext(),lat)
+                    SharedPreference.saveLon(requireContext(),lon)
+
+                    if (location=="map") {
                             binding.btnAddHome.setOnClickListener {
                                 Log.i("TAG", "getAddress: $city ")
-                            homeViewModel.getWeather(lat, lon, "", "", "")
-                                val home=HomeFragment.newInstance("map")
-                                val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-                                transaction.replace(R.id.main, home)
-                                transaction.addToBackStack(null)
-                                transaction.commit()
+                            homeViewModel.getWeather(lat, lon, "", unit, language)
+//                                val home=HomeFragment.newInstance("map")
+//                                val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+//                                transaction.replace(R.id.main, HomeFragment())
+//                                transaction.addToBackStack(null)
+//                                transaction.commit()
                            }
                         }
                     //  favorite=Favorite(lat,lon,City(1,city, Coord(lat,lon),country,1,1,1,1))

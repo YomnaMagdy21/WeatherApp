@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home">الصفحة الرئيسية</string>
+    <string name="app_name">الطقس</string>
+    <string name="home">الرئيسية</string>
     <string name="fav">المفضلة</string>
     <string name="setting">الاعدادات</string>
     <string name="location">الموقع</string>
@@ -24,12 +25,12 @@
     <string name="wind">سرعة الرياح</string>
     <string name="clouds">السحاب</string>
     <string name="uv">الاشعة تحت البنفسجية</string>
-    <string name="visibilty">الرؤية</string>
-    <string name="alert">انذار</string>
-    <string name="from">From</string>
-    <string name="to">To</string>
-    <string name="alarm">Alarm</string>
-    <string name="save">Save</string>
-    <string name="add_to_fav">Add to Favorite</string>
-    <string name="set_location">Set Location</string>
+    <string name="visibility">الرؤية</string>
+    <string name="alert">تنبيه</string>
+    <string name="from">من</string>
+    <string name="to">الى</string>
+    <string name="alarm">منبه</string>
+    <string name="save">حفظ</string>
+    <string name="add_to_fav">اضافه الى المفضلة</string>
+    <string name="set_location">حفظ المكان</string>
 </resources>

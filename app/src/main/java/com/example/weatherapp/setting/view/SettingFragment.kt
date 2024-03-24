@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.recreate
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentSettingBinding
 import com.example.weatherapp.home.view.HomeFragment
+import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.map.viewmaodel.MapViewModel
 import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
 import com.example.weatherapp.model.WeatherRepositoryImp
@@ -62,10 +64,12 @@ class SettingFragment : Fragment() {
 
         binding.arabic.setOnClickListener {
             settingViewModel.changeLanguage("ar")
+            SharedPreference.saveLanguage(requireContext(),"ar")
 
         }
         binding.english.setOnClickListener {
             settingViewModel.changeLanguage("en")
+            SharedPreference.saveLanguage(requireContext(),"en")
 
         }
 
@@ -87,6 +91,16 @@ class SettingFragment : Fragment() {
         }
         binding.mph.setOnClickListener {
                SharedPreference.saveWindUnit(requireContext(),"Imperial")
+        }
+        binding.gps.setOnClickListener {
+            SharedPreference.saveLocation(requireContext(),"gps")
+        }
+        binding.map.setOnClickListener {
+            SharedPreference.saveLocation(requireContext(),"map")
+            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.main, MapFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         lifecycleScope.launch {

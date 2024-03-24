@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.weatherapp.model.Alert
 import com.example.weatherapp.model.AlertData
+import com.example.weatherapp.model.AlertMessage
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherResponse
 import kotlinx.coroutines.flow.Flow
@@ -28,11 +29,11 @@ interface WeatherDAO {
     suspend fun deleteFromFavorite(favorite: Favorite): Int
 
     @Query("SELECT * FROM Alert")
-    fun getAllAlerts(): Flow<List<AlertData>>
+    fun getAllAlerts(): Flow<List<AlertMessage>>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertToAlert(alert: AlertData)
+    suspend fun insertToAlert(alert: AlertMessage)
     @Delete
-    suspend fun deleteFromAlert(alert: AlertData): Int
+    suspend fun deleteFromAlert(alert: AlertMessage): Int
 
 
 }

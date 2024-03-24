@@ -1,11 +1,7 @@
 package com.example.weatherapp.home.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.model.Favorite
-import com.example.weatherapp.model.Hour
 import com.example.weatherapp.model.WeatherRepository
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.util.UIState
@@ -51,7 +47,7 @@ class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
             }            }
 
 
-    fun getWeather(lat:Double, lon:Double, exclude:String,  units:String,lang:String){
+    fun getWeather(lat: Double, lon:Double, exclude:String, units:String, lang:String){
         viewModelScope.launch(Dispatchers.IO){
           //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,units,lang))
             _irepo.getWeather(lat,lon,exclude,units,lang)

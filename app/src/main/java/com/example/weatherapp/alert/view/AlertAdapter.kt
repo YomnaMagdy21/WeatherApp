@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.AlertItemBinding
 import com.example.weatherapp.databinding.FavItemBinding
 import com.example.weatherapp.favorite.view.FavoriteAdapter
+import com.example.weatherapp.model.AlertMessage
 
 import com.example.weatherapp.model.WeatherData
 
-class AlertAdapter (var context: Context):
-    ListAdapter<WeatherData, AlertAdapter.DayViewHolder>(DayDiffUtil()) {
+class AlertAdapter (var context: Context,var listener: OnAlertClickListener):
+    ListAdapter<AlertMessage, AlertAdapter.DayViewHolder>(DayDiffUtil()) {
 
 
     lateinit var binding: AlertItemBinding
@@ -28,7 +29,13 @@ class AlertAdapter (var context: Context):
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val current = getItem(position)
-//        holder.binding.tempDesc.text = current.temp.toString()
+        holder.binding.dateFrom.text=current.fromTime
+        holder.binding.timeFrom.text=current.fromDate
+        holder.binding.dateTo.text=current.toTime
+        holder.binding.timeTo.text=current.toDate
+        holder.binding.delete.setOnClickListener {
+            listener.onClickToRemove(current)
+        }
 //        holder.binding.tempNo.text = current.dt.toString()
 //        var iconName=current.weather[0].icon
 //        Glide.with(context).load(" https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.imgWeather)
@@ -40,12 +47,12 @@ class AlertAdapter (var context: Context):
     }
 }
 
-class DayDiffUtil : DiffUtil.ItemCallback<WeatherData>() {
-    override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+class DayDiffUtil : DiffUtil.ItemCallback<AlertMessage>() {
+    override fun areItemsTheSame(oldItem: AlertMessage, newItem: AlertMessage): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+    override fun areContentsTheSame(oldItem: AlertMessage, newItem: AlertMessage): Boolean {
         return newItem == oldItem
     }
 

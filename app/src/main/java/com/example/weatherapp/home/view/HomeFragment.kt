@@ -20,24 +20,18 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.weatherapp.CurrentWeather
-import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
-import com.example.weatherapp.favorite.view.FavDetailsFragment
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
-import com.example.weatherapp.map.view.MapFragment
-import com.example.weatherapp.model.Favorite
 
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
@@ -51,15 +45,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.properties.Delegates
 
 
 class HomeFragment : Fragment() {
@@ -76,14 +64,17 @@ class HomeFragment : Fragment() {
     var locationRequestID = 5
     private var isFailure: Boolean = true
     var isSuccess: Boolean = true
-    var currentLatitude = 37.4220936
-    var currentLongitude = -122.083922
+    var currentLatitude = 31.1964949
+    var currentLongitude = 29.9273458
     lateinit var languageCode: String
     var weatherRequested = false
     private var previousLanguageCode: String? = null
     lateinit var bindingMap: FragmentMapBinding
     lateinit var  unit:String
     lateinit var unitOfWindSpeed:String
+     lateinit var location:String
+     var lat:Double=0.0
+     var lon:Double=0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,7 +164,9 @@ class HomeFragment : Fragment() {
 //        homeViewModel.weather.observe(requireActivity()){ days ->
 //            dayAdapter.submitList(days.list)
 //        }
-        val location = arguments?.getString("loc")
+         location = SharedPreference.getLocation(requireContext())
+        lat=SharedPreference.getLat(requireContext())
+        lon=SharedPreference.getLon(requireContext())
         Log.i("TAG", "onViewCreated:loc $location ")
         if (NetworkConnection.checkNetworkConnection(requireContext())) {
             if (location == "map") {
@@ -288,16 +281,10 @@ class HomeFragment : Fragment() {
 //            getFreshLocation()
 //            weatherRequested = true
 //        }
-        val currentLanguageCode = Locale.getDefault().language
-         unit=SharedPreference.getUnit(requireContext())
+        unit=SharedPreference.getUnit(requireContext())
 
-        if (currentLanguageCode == "ar") {
-            homeViewModel.getWeather(currentLatitude, currentLongitude, "", unit, "ar")
-        }
-        else{
-            homeViewModel.getWeather(currentLatitude, currentLongitude, "", unit, "en")
+        getFreshLocation()
 
-        }
 
     }
 
@@ -433,15 +420,61 @@ class HomeFragment : Fragment() {
                     //  val lang=getLanguagePreference(requireContext())
                     val languageCode = Locale.getDefault().language
                     Log.i("TAG", "onCreateView: lang code is $languageCode ")
+                    val currentLanguageCode = Locale.getDefault().language
+                    unit=SharedPreference.getUnit(requireContext())
+                   if(location=="gps") {
+                       if (currentLanguageCode == "ar") {
+                           homeViewModel.getWeather(
+                               currentLatitude,
+                               currentLongitude,
+                               "",
+                               unit,
+                               "ar"
+                           )
+                       } else {
+                           homeViewModel.getWeather(
+                               currentLatitude,
+                               currentLongitude,
+                               "",
+                               unit,
+                               "en"
+                           )
+
+                       }
+                       SharedPreference.saveLat(requireContext(),currentLatitude)
+                       SharedPreference.saveLon(requireContext(),currentLongitude)
+                   }else{
+                       Log.i("TAG", "onLocationResult:  ")
+                       if (currentLanguageCode == "ar") {
+                           homeViewModel.getWeather(
+                               lat,
+                               lon,
+                               "",
+                               unit,
+                               "ar"
+                           )
+                       } else {
+                           homeViewModel.getWeather(
+                               lat,
+                               lon,
+                               "",
+                               unit,
+                               "en"
+                           )
+
+                       }
+                       SharedPreference.saveLat(requireContext(),lat)
+                       SharedPreference.saveLon(requireContext(),lon)
+                   }
 
 
-                    homeViewModel.getWeather(
-                        currentLatitude,
-                        currentLongitude,
-                        "",
-                        "",
-                        languageCode
-                    )
+//                    homeViewModel.getWeather(
+//                        currentLatitude,
+//                        currentLongitude,
+//                        "",
+//                        "",
+//                        languageCode
+//                    )
 
                     //   Log.i("TAG", "onViewCreated: language is $lang")
 

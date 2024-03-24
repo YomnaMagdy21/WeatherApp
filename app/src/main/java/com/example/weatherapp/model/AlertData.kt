@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 //}
 
 
-@Entity(tableName = "Alert")
+//@Entity(tableName = "Alert")
 data class AlertData(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int,
+//    @PrimaryKey(autoGenerate = true)
+//    var id: Int,
     var date: String,
     var message: Message
 )

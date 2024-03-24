@@ -2,7 +2,9 @@ package com.example.weatherapp.home.view
 
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -13,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.DayItemBinding
 
 import com.example.weatherapp.model.WeatherData
+import com.example.weatherapp.util.SharedPreference
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -35,20 +38,42 @@ class DayAdapter (var context: Context):
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val current = getItem(position)
+        val unit=SharedPreference.getUnit(context)
         holder.binding.tempDesc.text = current.weather[0].description
-        holder.binding.tempNo.text = current.main.temp_max .toString()+" / "+current.main.temp_min
+        if(unit=="metric") {
+            holder.binding.tempNo.text =
+                current.main.temp_max.toString() + "°C/" + current.main.temp_min + "°C"
+        }else if(unit=="imperial"){
+            holder.binding.tempNo.text =
+                current.main.temp_max.toString() + "°F/" + current.main.temp_min + "°F"
+
+        }else{
+            holder.binding.tempNo.text =
+                current.main.temp_max.toString() + "°K/" + current.main.temp_min + "°K"
+
+        }
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
+
+        val daysToShow = mutableSetOf<String>()
+        val daysToShowCount = 5 // Number of unique days to show
+
+   val language=Locale.getDefault().language
+        val appLocale = Resources.getSystem().configuration.locales[0]
+        Log.i("TAG", "onBindViewHolder:appLocale $appLocale ")
         val dateTime = LocalDateTime.parse(current.dt_txt, formatter)
         val date = dateTime.toLocalDate()
 
         val dayOfWeekEnum = date.dayOfWeek
-        val daysToShow = mutableSetOf<String>()
-        val daysToShowCount = 5 // Number of unique days to show
 
+      if(language=="ar") {
+          val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale("ar"))
+          holder.binding.day.text=dayOfWeekName
+      }else{
+          val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale("en"))
+          holder.binding.day.text=dayOfWeekName
+      }
 
-
-        val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
 //        for (dateTime in current.dt_txt) {
 //            val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
 //            daysToShow.add(dayOfWeekName)
@@ -62,7 +87,7 @@ class DayAdapter (var context: Context):
 //
 //        }
 
-        holder.binding.day.text=dayOfWeekName
+
 
 
 

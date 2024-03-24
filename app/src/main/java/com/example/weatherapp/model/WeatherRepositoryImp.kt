@@ -62,15 +62,15 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
 
     }
 
-    override fun getAlertWeather(): Flow<List<AlertData>> {
+    override fun getAlertWeather(): Flow<List<AlertMessage>> {
         return weatherLocalDataSource.getStoredAlert()
     }
 
-    override suspend fun insertAlertWeather(alert: AlertData) {
+    override suspend fun insertAlertWeather(alert: AlertMessage) {
         weatherLocalDataSource.insertAlert(alert)
     }
 
-    override suspend fun deleteAlertWeather(alert: AlertData) {
+    override suspend fun deleteAlertWeather(alert: AlertMessage) {
         weatherLocalDataSource.deleteAlert(alert)
     }
 }

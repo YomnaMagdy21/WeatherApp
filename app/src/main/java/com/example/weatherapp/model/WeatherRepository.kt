@@ -15,7 +15,7 @@ interface WeatherRepository {
     suspend fun insertFavoriteWeather(favorite: Favorite)
     suspend fun deleteFavoriteWeather(favorite: Favorite)
 
-    fun getAlertWeather():Flow<List<AlertData>>
-    suspend fun insertAlertWeather(alert: AlertData)
-    suspend fun deleteAlertWeather(alert: AlertData)
+    fun getAlertWeather():Flow<List<AlertMessage>>
+    suspend fun insertAlertWeather(alert: AlertMessage)
+    suspend fun deleteAlertWeather(alert: AlertMessage)
 }

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="20dp"
     app:cardElevation="5dp"
-    android:alpha="0.7"
+
     android:layout_marginVertical="15dp"
-    android:layout_marginHorizontal="25dp"
+    android:layout_marginHorizontal="35dp"
     android:layout_width="350dp"
     android:layout_height="wrap_content">
 
@@ -16,10 +16,10 @@
 
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/dateFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="40dp"
             android:text="TextView"
             android:textSize="20sp"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/timeFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -36,38 +36,39 @@
             android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView21"
-            app:layout_constraintStart_toStartOf="@+id/textView21"
-            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+            app:layout_constraintEnd_toEndOf="@+id/dateFrom"
+            app:layout_constraintStart_toStartOf="@+id/dateFrom"
+            app:layout_constraintTop_toBottomOf="@+id/dateFrom" />
 
         <TextView
             android:id="@+id/textView23"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="-"
+            android:text="->"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/textView24"
-            app:layout_constraintStart_toEndOf="@+id/textView21"
+            app:layout_constraintEnd_toStartOf="@+id/dateTo"
+            app:layout_constraintStart_toEndOf="@+id/dateFrom"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView24"
+            android:id="@+id/dateTo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="72dp"
+            android:layout_marginEnd="24dp"
             android:text="TextView"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/textView21"
+            app:layout_constraintBottom_toBottomOf="@+id/dateFrom"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView21"
-            app:layout_constraintTop_toTopOf="@+id/textView21"
+            app:layout_constraintStart_toEndOf="@+id/dateFrom"
+            app:layout_constraintTop_toTopOf="@+id/dateFrom"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView25"
+            android:id="@+id/timeTo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -75,12 +76,12 @@
             android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView24"
-            app:layout_constraintStart_toStartOf="@+id/textView24"
-            app:layout_constraintTop_toBottomOf="@+id/textView24" />
+            app:layout_constraintEnd_toEndOf="@+id/dateTo"
+            app:layout_constraintStart_toStartOf="@+id/dateTo"
+            app:layout_constraintTop_toBottomOf="@+id/dateTo" />
 
         <ImageView
-            android:id="@+id/imageView8"
+            android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

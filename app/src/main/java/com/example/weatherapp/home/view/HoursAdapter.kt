@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.HourItemBinding
 import com.example.weatherapp.model.WeatherData
+import com.example.weatherapp.util.SharedPreference
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -31,8 +32,15 @@ class HourAdapter (var context: Context):
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val current = getItem(position)
+        val unit= SharedPreference.getUnit(context)
+        if(unit=="metric") {
+            holder.binding.degree.text = current.main.temp.toString()+"°C"
+        }else if(unit=="imperial"){
+            holder.binding.degree.text = current.main.temp.toString()+"°F"
+        }else{
+            holder.binding.degree.text = current.main.temp.toString()+"°K"
 
-        holder.binding.degree.text = current.main.temp.toString()
+        }
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val dateTime = LocalDateTime.parse(current.dt_txt, formatter)
         val time = dateTime.toLocalTime()
