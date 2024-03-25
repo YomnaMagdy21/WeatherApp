@@ -5,8 +5,8 @@ import com.example.weatherapp.database.WeatherLocalDataSource
 import com.example.weatherapp.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 
-class WeatherRepositoryImp private constructor(private var weatherRemoteDataSource: WeatherRemoteDataSource,
-                                               private var weatherLocalDataSource: WeatherLocalDataSource
+class WeatherRepositoryImp(private var weatherRemoteDataSource: WeatherRemoteDataSource,
+                           private var weatherLocalDataSource: WeatherLocalDataSource
 ):WeatherRepository{
 
     companion object{
@@ -24,7 +24,7 @@ class WeatherRepositoryImp private constructor(private var weatherRemoteDataSour
         }
     }
 
-    override  fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<WeatherResponse> {
+    override  fun getWeather(lat:Double, lon:Double, exclude:String, units:String, lang:String): Flow<WeatherResponse> {
         return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,lang,units)
     }
 

@@ -54,9 +54,10 @@ dependencies {
 
 
     //Glide
-    implementation ("com.github.bumptech.glide:glide:4.13.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+  //  annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
 //Retrofit
     implementation ("com.google.code.gson:gson:2.9.0")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -94,6 +95,44 @@ dependencies {
 
 //location
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+//
+//    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$2.7.0")
+//    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$2.7.0")
+//    kapt ("androidx.lifecycle:lifecycle-compiler:$2.7.0")
+//
+//    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$2.7.0")
+//    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$2.7.0")
+
+//
+//    // Dependencies for local unit tests
+//    testImplementation ("junit:junit:$2.2.0")
+//    testImplementation ("org.hamcrest:hamcrest-all:$2.2.0")
+//    testImplementation ("androidx.arch.core:core-testing:$2.2.0")
+//    testImplementation ("org.robolectric:robolectric:$2.2.0")
+//
+//    // AndroidX Test - JVM testing
+//    testImplementation ("androidx.test:core-ktx:$2.6.1")
+//
+//    androidTestImplementation ("androidx.arch.core:core-testing:$2.2.0")
+//
+//
+//    // AndroidX and Robolectric
+//    testImplementation ("androidx.test.ext:junit-ktx:$2.6.1")
+//    testImplementation ("androidx.test:core-ktx:$2.6.1")
+//    testImplementation ("org.robolectric:robolectric:4.8")
+
+    // InstantTaskExecutorRule
+    testImplementation ("androidx.arch.core:core-testing:2.1.0")
+    androidTestImplementation ("androidx.arch.core:core-testing:2.1.0")
+
+    //kotlinx-coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:$1.7.3")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$1.7.3")
+    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$1.7.3")
+
+    androidTestImplementation ("androidx.test:runner:1.4.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
 
 
     testImplementation("junit:junit:4.13.2")

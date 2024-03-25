@@ -63,24 +63,31 @@ class StartFragment : Fragment() {
         bindingDialog.map.setOnClickListener {
             Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
             location="map"
-            fragment = MapFragment.newInstance(location)
+//            fragment = MapFragment.newInstance(location)
             SharedPreference.saveLocation(requireContext(),"map")
 
         }
         bindingDialog.gps.setOnClickListener {
             Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
             location="gps"
-            fragment=HomeFragment.newInstance(location)
+//            fragment=HomeFragment.newInstance(location)
             SharedPreference.saveLocation(requireContext(),"gps")
 
         }
         bindingDialog.btnSave.setOnClickListener {
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
+            if(location=="map"){
+                val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.main, MapFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
             dialog.dismiss()
-            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.main, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+
+//            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+//            transaction.replace(R.id.main, fragment)
+//            transaction.addToBackStack(null)
+//            transaction.commit()
 
 
 

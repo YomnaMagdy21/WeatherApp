@@ -18,7 +18,7 @@ data class WeatherResponse(
     @PrimaryKey
     var city: City
 ){
-
+ constructor():this(0.0,0.0,"",null, listOf(),City(0,"",null,"",0,0,0,0))
 }
 
 

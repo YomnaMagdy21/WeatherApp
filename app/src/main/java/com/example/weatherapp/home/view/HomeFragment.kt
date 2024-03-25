@@ -20,18 +20,21 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+import com.example.weatherapp.map.view.MapFragment
 
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
@@ -66,7 +69,7 @@ class HomeFragment : Fragment() {
     var isSuccess: Boolean = true
     var currentLatitude = 31.1964949
     var currentLongitude = 29.9273458
-    lateinit var languageCode: String
+    lateinit var language: String
     var weatherRequested = false
     private var previousLanguageCode: String? = null
     lateinit var bindingMap: FragmentMapBinding
@@ -75,6 +78,8 @@ class HomeFragment : Fragment() {
      lateinit var location:String
      var lat:Double=0.0
      var lon:Double=0.0
+    var firstTime=false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,8 +128,9 @@ class HomeFragment : Fragment() {
         )
 
         homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        unit=SharedPreference.getUnit(requireContext())
 
-
+           getFreshLocation()
 
 
         return binding.root
@@ -138,6 +144,7 @@ class HomeFragment : Fragment() {
 
         setUpRecyclerViewHour()
         setUpRecyclerViewDay()
+
 //
 //        if (!weatherRequested) { // Check if weather has not been requested yet
 //            getFreshLocation() // Get fresh location first
@@ -167,8 +174,12 @@ class HomeFragment : Fragment() {
          location = SharedPreference.getLocation(requireContext())
         lat=SharedPreference.getLat(requireContext())
         lon=SharedPreference.getLon(requireContext())
+        language=SharedPreference.getLanguage(requireContext())
+
+
         Log.i("TAG", "onViewCreated:loc $location ")
         if (NetworkConnection.checkNetworkConnection(requireContext())) {
+            homeViewModel.deleteData()
             if (location == "map") {
                 bindingMap.btnAddFav.visibility = View.GONE
                 bindingMap.btnAddHome.visibility = View.VISIBLE
@@ -270,7 +281,11 @@ class HomeFragment : Fragment() {
             }
 
         }
-
+//        if(!firstTime) {
+//
+//            showDialogBox()
+//            firstTime=true
+//        }
 
     }
 
@@ -281,9 +296,9 @@ class HomeFragment : Fragment() {
 //            getFreshLocation()
 //            weatherRequested = true
 //        }
-        unit=SharedPreference.getUnit(requireContext())
-
-        getFreshLocation()
+//        unit=SharedPreference.getUnit(requireContext())
+//
+//        getFreshLocation()
 
 
     }
@@ -368,13 +383,22 @@ class HomeFragment : Fragment() {
 
         bindingDialog.map.setOnClickListener {
             Toast.makeText(requireContext(), "map", Toast.LENGTH_LONG).show()
+            SharedPreference.saveLocation(requireContext(),"map")
         }
         bindingDialog.gps.setOnClickListener {
             Toast.makeText(requireContext(), "gps", Toast.LENGTH_LONG).show()
+            SharedPreference.saveLocation(requireContext(),"gps")
 
         }
         bindingDialog.btnSave.setOnClickListener {
-            Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "save $location", Toast.LENGTH_LONG).show()
+
+            if(location=="map"){
+                val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.main, MapFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
             dialog.dismiss()
 
 
@@ -420,49 +444,64 @@ class HomeFragment : Fragment() {
                     //  val lang=getLanguagePreference(requireContext())
                     val languageCode = Locale.getDefault().language
                     Log.i("TAG", "onCreateView: lang code is $languageCode ")
-                    val currentLanguageCode = Locale.getDefault().language
+                    val currentLanguageCode = SharedPreference.getLanguage(requireContext())
                     unit=SharedPreference.getUnit(requireContext())
                    if(location=="gps") {
-                       if (currentLanguageCode == "ar") {
-                           homeViewModel.getWeather(
-                               currentLatitude,
-                               currentLongitude,
-                               "",
-                               unit,
-                               "ar"
-                           )
-                       } else {
-                           homeViewModel.getWeather(
-                               currentLatitude,
-                               currentLongitude,
-                               "",
-                               unit,
-                               "en"
-                           )
+//                       if (currentLanguageCode == "ar") {
+//                           homeViewModel.getWeather(
+//                               currentLatitude,
+//                               currentLongitude,
+//                               "",
+//                               unit,
+//                               "ar"
+//                           )
+//                       } else {
+//                           homeViewModel.getWeather(
+//                               currentLatitude,
+//                               currentLongitude,
+//                               "",
+//                               unit,
+//                               "en"
+//                           )
+//
+//                       }
+                       homeViewModel.getWeather(
+                           currentLatitude,
+                           currentLongitude,
+                           "",
+                           unit,
+                           currentLanguageCode
+                       )
 
-                       }
                        SharedPreference.saveLat(requireContext(),currentLatitude)
                        SharedPreference.saveLon(requireContext(),currentLongitude)
                    }else{
                        Log.i("TAG", "onLocationResult:  ")
-                       if (currentLanguageCode == "ar") {
-                           homeViewModel.getWeather(
-                               lat,
-                               lon,
-                               "",
-                               unit,
-                               "ar"
-                           )
-                       } else {
-                           homeViewModel.getWeather(
-                               lat,
-                               lon,
-                               "",
-                               unit,
-                               "en"
-                           )
-
-                       }
+                       homeViewModel.getWeather(
+                           lat,
+                           lon,
+                           "",
+                           unit,
+                           currentLanguageCode
+                       )
+//                       if (currentLanguageCode == "ar") {
+//                           homeViewModel.getWeather(
+//                               lat,
+//                               lon,
+//                               "",
+//                               unit,
+//                               "ar"
+//                           )
+//                       } else {
+//                           homeViewModel.getWeather(
+//                               lat,
+//                               lon,
+//                               "",
+//                               unit,
+//                               "en"
+//                           )
+//
+//                       }
                        SharedPreference.saveLat(requireContext(),lat)
                        SharedPreference.saveLon(requireContext(),lon)
                    }

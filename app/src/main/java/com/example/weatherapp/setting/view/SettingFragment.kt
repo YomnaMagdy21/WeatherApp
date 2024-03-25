@@ -65,11 +65,13 @@ class SettingFragment : Fragment() {
         binding.arabic.setOnClickListener {
             settingViewModel.changeLanguage("ar")
             SharedPreference.saveLanguage(requireContext(),"ar")
+            applyLanguageChanges("ar")
 
         }
         binding.english.setOnClickListener {
             settingViewModel.changeLanguage("en")
             SharedPreference.saveLanguage(requireContext(),"en")
+            applyLanguageChanges("en")
 
         }
 
@@ -127,34 +129,34 @@ class SettingFragment : Fragment() {
                     }
                 }
         }
+
+
+
+    private fun saveLanguagePreference(context: Context, language: String) {
+        val sharedPref = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("language", language)
+            apply()
+        }
     }
 
-
-//    private fun saveLanguagePreference(context: Context, language: String) {
-//        val sharedPref = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-//        with(sharedPref.edit()) {
-//            putString("language", language)
-//            apply()
-//        }
-//    }
-//
-//    // Function to emit language changes through MutableSharedFlow
-//
-//
-//    // Apply language changes when the user selects a language
-//    private fun applyLanguageChanges(language: String) {
-//        saveLanguagePreference(requireContext(), language)
-//       // emitLanguageChange(language) // Emit language change through MutableSharedFlow
-//        updateAppContext(language)
-//    }
-//    private fun updateAppContext(language: String) {
-//        val locale = Locale(language)
-//        Locale.setDefault(locale)
-//        val config = resources.configuration
-//        config.setLocale(locale)
-//        resources.updateConfiguration(config, resources.displayMetrics)
-//        recreate(requireActivity()) // Recreate activity to apply language changes
-//    }
+    // Function to emit language changes through MutableSharedFlow
 
 
+    // Apply language changes when the user selects a language
+    private fun applyLanguageChanges(language: String) {
+        saveLanguagePreference(requireContext(), language)
+       // emitLanguageChange(language) // Emit language change through MutableSharedFlow
+        updateAppContext(language)
+    }
+    private fun updateAppContext(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+        recreate(requireActivity()) // Recreate activity to apply language changes
+    }
+
+}
 

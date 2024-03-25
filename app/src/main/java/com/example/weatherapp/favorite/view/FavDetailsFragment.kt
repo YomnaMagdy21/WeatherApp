@@ -74,7 +74,7 @@ class FavDetailsFragment : Fragment() {
         val favorite = arguments?.getSerializable("favorite") as? Favorite
 
         Log.i(TAG, "onCreateView: ${favorite?.city}")
-        val currentLanguageCode = Locale.getDefault().language
+        val currentLanguageCode = SharedPreference.getLanguage(requireContext())
         unit= SharedPreference.getUnit(requireContext())
 
         if (favorite != null) {

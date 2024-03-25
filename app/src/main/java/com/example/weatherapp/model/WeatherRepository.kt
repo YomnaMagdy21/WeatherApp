@@ -4,7 +4,7 @@ import com.example.weatherapp.CurrentWeather
 import kotlinx.coroutines.flow.Flow
 
 interface WeatherRepository {
-     fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<WeatherResponse>
+     fun getWeather(lat:Double, lon:Double, exclude:String, units:String, lang:String): Flow<WeatherResponse>
     suspend fun getCurrentWeather(lat:Double, lon:Double,lang:String, units:String): Flow<CurrentWeather>
 
     fun getHomeWeather():Flow<WeatherResponse>

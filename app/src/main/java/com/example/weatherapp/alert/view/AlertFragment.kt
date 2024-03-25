@@ -302,6 +302,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
                 val formattedHour = if (hour12Format == 0) 12 else hour12Format
 
                 if(isFromButtonClicked) {
+                    calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
 
                     dateFrom="$daySaved-$monthSaved-$yearSaved"
                     bindingDialog.fromDate.text = "$daySaved-$monthSaved-$yearSaved"
@@ -309,18 +310,15 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
                     timeFrom=String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
 
                     isFromButtonClicked=false
-                    calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
-
                     startTimeMillis=  calendarFrom.timeInMillis
                 }else{
+                    calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
 
                     dateTo="$daySaved-$monthSaved-$yearSaved"
                     bindingDialog.toDate.text = "$daySaved-$monthSaved-$yearSaved"
                     bindingDialog.toTime.text = String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                     timeTo=String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                     isFromButtonClicked=true
-                    calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
-
                     endTimeMillis = calendarTo.timeInMillis
                 }
             }
@@ -332,24 +330,22 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             val formattedHour = if (hour12Format == 0) 12 else hour12Format
 
             if(isFromButtonClicked) {
-                   dateFrom="$daySaved-$monthSaved-$yearSaved"
+                calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
+
+                        dateFrom="$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.fromDate.text = "$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.fromTime.text = String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
                 timeFrom=String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
-
-                isFromButtonClicked=false
-                calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
                 startTimeMillis=  calendarFrom.timeInMillis
-
+                isFromButtonClicked=false
             }else{
+                calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
 
                 dateTo="$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.toDate.text = "$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.toTime.text = String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                 timeTo=String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                 isFromButtonClicked=true
-                calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
-
                 endTimeMillis = calendarTo.timeInMillis
             }
 
