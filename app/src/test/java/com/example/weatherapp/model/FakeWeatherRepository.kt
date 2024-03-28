@@ -11,6 +11,7 @@ class FakeWeatherRepository: WeatherRepository {
     private var getWeatherCalledWith: Pair<Double, Double>? = null
     var homeData:MutableList<WeatherResponse> = mutableListOf()
      var fakeWeatherLocalDataSource=FakeWeatherLocalDataSource()
+    var fakeWeatherRemoteDataSource=FakeRemoteDataSource()
 
     override fun getWeather(lat: Double, lon: Double, exclude: String, units: String, lang: String): Flow<WeatherResponse> {
        // getWeatherCalledWith = Pair(lat, lon)
@@ -35,21 +36,21 @@ class FakeWeatherRepository: WeatherRepository {
     }
 
     override suspend fun deleteHomeWeather() {
-        TODO("Not yet implemented")
+        fakeWeatherLocalDataSource.deleteAll()
     }
 
-    override fun getFavoriteWeather(): Flow<List<Favorite>> {
-        TODO("Not yet implemented")
-    }
+
 
     override suspend fun insertFavoriteWeather(favorite: Favorite) {
-        TODO("Not yet implemented")
+        fakeWeatherLocalDataSource.insertFav(favorite)
     }
 
     override suspend fun deleteFavoriteWeather(favorite: Favorite) {
-        TODO("Not yet implemented")
+        fakeWeatherLocalDataSource.deleteFav(favorite)
     }
-
+    override fun getFavoriteWeather(): Flow<List<Favorite>> {
+       return flowOf()
+    }
     override fun getAlertWeather(): Flow<List<AlertMessage>> {
         TODO("Not yet implemented")
     }

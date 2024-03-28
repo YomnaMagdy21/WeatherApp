@@ -33,4 +33,5 @@
     <string name="save">حفظ</string>
     <string name="add_to_fav">اضافه الى المفضلة</string>
     <string name="set_location">حفظ المكان</string>
+    <string name="cancel">Cancel</string>
 </resources>

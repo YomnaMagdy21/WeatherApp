@@ -34,4 +34,5 @@
     <string name="save">Save</string>
     <string name="add_to_fav">Add to Favorite</string>
     <string name="set_location">Set Location</string>
+    <string name="cancel">Cancel</string>
 </resources>

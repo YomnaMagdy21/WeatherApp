@@ -85,6 +85,6 @@ data class City(
 )
 
 data class Coord(
-    var lat: Double,
-    var lon: Double
+    var lat: Double?,
+    var lon: Double?
 )

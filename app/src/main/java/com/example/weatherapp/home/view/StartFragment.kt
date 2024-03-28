@@ -11,16 +11,25 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.recreate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.weatherapp.R
+import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentStartBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
+import com.example.weatherapp.home.viewmodel.HomeViewModel
+import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
+import com.example.weatherapp.model.WeatherRepositoryImp
+import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.SharedPreference
+import java.util.Locale
 
 
 class StartFragment : Fragment() {
@@ -31,6 +40,9 @@ class StartFragment : Fragment() {
     lateinit var bindingMain: ActivityMainBinding
     lateinit var location:String
     lateinit var fragment: Fragment
+    lateinit var homeViewModel: HomeViewModel
+    lateinit var homeViewModelFactory: HomeViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -45,11 +57,42 @@ class StartFragment : Fragment() {
         // Inflate the layout for this fragment
 
         binding = FragmentStartBinding.inflate(inflater, container, false)
-          showDialogBox()
+
+        homeViewModelFactory = HomeViewModelFactory(
+            WeatherRepositoryImp.getInstance(
+                WeatherRemoteDataSourceImp.getInstance(),
+                WeatherLocalDataSourceImp(requireContext())
+            )
+        )
+
+        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+
 
 
         return binding.root    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val language=SharedPreference.getLanguage(requireContext())
+        if(language=="en") {
+            val locale = Locale("en")
+            Locale.setDefault(locale)
+            val config = resources.configuration
+            config.setLocale(locale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+           // recreate(requireActivity())
+        }
+        else{
+            val locale = Locale("ar")
+            Locale.setDefault(locale)
+            val config = resources.configuration
+            config.setLocale(locale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+            //recreate(requireActivity())
+
+        }
+        showDialogBox()
+    }
 
     private fun showDialogBox(){
         val dialog= Dialog(requireContext())
@@ -62,19 +105,24 @@ class StartFragment : Fragment() {
 
         bindingDialog.map.setOnClickListener {
             Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
-            location="map"
+          //  location="map"
 //            fragment = MapFragment.newInstance(location)
+            homeViewModel.deleteData()
             SharedPreference.saveLocation(requireContext(),"map")
 
         }
         bindingDialog.gps.setOnClickListener {
             Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
-            location="gps"
+            //location="gps"
 //            fragment=HomeFragment.newInstance(location)
+            homeViewModel.deleteData()
             SharedPreference.saveLocation(requireContext(),"gps")
 
         }
         bindingDialog.btnSave.setOnClickListener {
+            location=SharedPreference.getLocation(requireContext())
+            homeViewModel.deleteData()
+
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
             if(location=="map"){
                 val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()

@@ -1,5 +1,8 @@
 package com.example.weatherapp.model
 
+import androidx.test.core.app.ApplicationProvider
+import com.example.weatherapp.database.WeatherDAO
+import com.example.weatherapp.database.WeatherDataBase
 import com.example.weatherapp.database.WeatherLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -7,8 +10,11 @@ import kotlinx.coroutines.flow.flowOf
 class FakeWeatherLocalDataSource:WeatherLocalDataSource {
 
     var homeData:MutableList<WeatherResponse> = mutableListOf()
-
-
+   //  var repo: FakeWeatherRepository=FakeWeatherRepository()
+   private val dao: WeatherDAO by lazy {
+       val db: WeatherDataBase = WeatherDataBase.getInstance(ApplicationProvider.getApplicationContext())
+       db.getWeatherDao()
+   }
     override suspend fun insert(weatherResponse: WeatherResponse) {
         homeData.add(weatherResponse)
     }
@@ -26,7 +32,7 @@ class FakeWeatherLocalDataSource:WeatherLocalDataSource {
     }
 
     override suspend fun insertFav(favorite: Favorite) {
-        TODO("Not yet implemented")
+       dao.insertToFavorite(favorite)
     }
 
     override suspend fun deleteFav(favorite: Favorite) {

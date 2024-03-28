@@ -1,5 +1,6 @@
 package com.example.weatherapp.alert.view
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.Dialog
@@ -7,9 +8,11 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.metrics.LogSessionId
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -20,6 +23,7 @@ import android.view.Window
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +33,7 @@ import com.example.weatherapp.R
 import com.example.weatherapp.alert.viewmodel.AlertViewModel
 import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
+import com.example.weatherapp.databinding.AlarmBinding
 import com.example.weatherapp.databinding.AlertDialogBinding
 import com.example.weatherapp.databinding.AlertItemBinding
 import com.example.weatherapp.databinding.FragmentAlertBinding
@@ -43,7 +48,10 @@ import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.UIState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerDialog.OnDateSetListener,OnAlertClickListener{
@@ -80,7 +88,12 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
     private var calendarFrom: Calendar = Calendar.getInstance()
     private var calendarTo: Calendar = Calendar.getInstance()
 
-
+    var startTimeMillis:Long=0
+    var isSave=false
+    var d:Long=0
+    lateinit var description:String
+    var timeDifference:Long=0
+    lateinit var bindingAlarm:AlarmBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +110,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
         // Inflate the layout for this fragment
         binding = FragmentAlertBinding.inflate(inflater, container, false)
         bindingDialog = AlertDialogBinding.inflate(layoutInflater)
+        bindingAlarm=AlarmBinding.inflate(layoutInflater)
 
 
 
@@ -104,6 +118,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -181,16 +196,18 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
 
                         val dataList = result.data as? WeatherResponse
 
-                        val description=dataList?.list?.get(0)?.weather?.get(0)?.description
+                         description= dataList?.list?.get(0)?.weather?.get(0)?.description.toString()
 //                        if (dataList!=null) {
 //                            var alert = dataList.city.coord?.let { AlertMessage(it.lat,
 //                                dataList.city.coord!!.lon,dateFrom,timeFrom,dateTo,timeTo) }
 //                        }
-                         lat = dataList?.city?.coord?.lat!!
-                        lon= dataList?.city?.coord?.lon!!
-                        city= dataList?.city?.name.toString()
-                        Log.i("TAG", "onViewCreated: dataaa $lat")
-                        Log.i("TAG", "onViewCreated: dataaa $dateFrom")
+
+                            lat = dataList?.city?.coord?.lat ?:0.0
+                            lon = dataList?.city?.coord?.lon ?: 0.0
+                            city = dataList?.city?.name.toString()
+                            Log.i("TAG", "onViewCreated: dataaa $lat")
+                            Log.i("TAG", "onViewCreated: dataaa $dateFrom")
+
 
                     }
                     is UIState.Failure -> {
@@ -218,10 +235,12 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
                 }
             }
         }
+       // setAlarm()
     }
 
 
 
+   @RequiresApi(Build.VERSION_CODES.R)
    private fun showDialogBox(){
         val dialog=Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -244,6 +263,16 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
         bindingDialog.btnSave.setOnClickListener {
             Toast.makeText(requireContext(),"save",Toast.LENGTH_LONG).show()
             alertViewModel.insertData(alert)
+            d=calcDateAndTime(alert.fromDate,alert.fromTime)
+            // setWeatherAlert(alert)
+           // setWeatherAlert(d)
+             timeDifference = calcDateAndTime(alert.fromDate, alert.fromTime)
+
+            setNotification(requireContext(), timeDifference+10000)
+            Log.i("TAG", "showDialogBox1: d1 $timeDifference")
+            isSave=true
+
+
             dialog.dismiss()
 
         }
@@ -284,6 +313,9 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
         val currentMinute = calendar.get(Calendar.MINUTE)
         val hour12Format = if (currentHour > 12) currentHour - 12 else currentHour
 
+
+
+
         if (daySaved == calendar.get(Calendar.DAY_OF_MONTH) &&
             monthSaved == calendar.get(Calendar.MONTH) &&
             yearSaved == calendar.get(Calendar.YEAR)) {
@@ -302,15 +334,15 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
                 val formattedHour = if (hour12Format == 0) 12 else hour12Format
 
                 if(isFromButtonClicked) {
-                    calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
-
-                    dateFrom="$daySaved-$monthSaved-$yearSaved"
+                   dateFrom="$daySaved-$monthSaved-$yearSaved"
                     bindingDialog.fromDate.text = "$daySaved-$monthSaved-$yearSaved"
                     bindingDialog.fromTime.text = String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
                     timeFrom=String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
+//                    calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
+                 //   startTimeMillis=  calendarFrom.timeInMillis
 
                     isFromButtonClicked=false
-                    startTimeMillis=  calendarFrom.timeInMillis
+
                 }else{
                     calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
 
@@ -319,7 +351,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
                     bindingDialog.toTime.text = String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                     timeTo=String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                     isFromButtonClicked=true
-                    endTimeMillis = calendarTo.timeInMillis
+                   // endTimeMillis = calendarTo.timeInMillis
                 }
             }
         }else {
@@ -330,53 +362,163 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             val formattedHour = if (hour12Format == 0) 12 else hour12Format
 
             if(isFromButtonClicked) {
-                calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
-
-                        dateFrom="$daySaved-$monthSaved-$yearSaved"
+                       dateFrom="$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.fromDate.text = "$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.fromTime.text = String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
                 timeFrom=String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
-                startTimeMillis=  calendarFrom.timeInMillis
+
                 isFromButtonClicked=false
             }else{
-                calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
+               // calendarTo.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
 
                 dateTo="$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.toDate.text = "$daySaved-$monthSaved-$yearSaved"
                 bindingDialog.toTime.text = String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                 timeTo=String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
                 isFromButtonClicked=true
-                endTimeMillis = calendarTo.timeInMillis
+                //endTimeMillis = calendarTo.timeInMillis
             }
 
 
         }
+        calendarFrom.set(yearSaved,monthSaved,daySaved,hourSaved,minuteSaved)
+        startTimeMillis=  calendarFrom.timeInMillis
+
         // Assuming calendarFrom is the Calendar instance for the start time
        // Assuming calendarTo is the Calendar instance for the end time
        // val durationMillis = calculateDuration(startTimeMillis, endTimeMillis)
-
+        val currentTimeMillis = Calendar.getInstance().timeInMillis
+        Log.i("TAG", "onTimeSet: currentTimeMillis $currentTimeMillis")
+val t=startTimeMillis-currentTimeMillis
         alert= AlertMessage(lat,lon,city,dateFrom,timeFrom,dateTo,timeTo)
-        setWeatherAlert(startTimeMillis,endTimeMillis,20)
+//        val d=calcDateAndTime(alert.fromDate,alert.toTime)
         Log.i("TAG", "onTimeSet: startTimeMillis $startTimeMillis")
 
-        Log.i("TAG", "onTimeSet: endTimeMillis $endTimeMillis")
+        Log.i("TAG", "onTimeSet: t $t")
         Log.i("TAG", "onTimeSet: $city")
 
+        val calendar1 = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, 1)
+            set(Calendar.HOUR_OF_DAY, 8)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        val triggerTime = calendar1.timeInMillis
+        Log.i("TAG", "onTimeSet:triggerTime $triggerTime ")
+       // if(isSave) {
+       // setNotification(requireContext(), startTimeMillis)
+      //  setWeatherAlert(startTimeMillis)
+            Log.i("TAG", "onTimeSet:save ${startTimeMillis}")
+
+      //  }
+
     }
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun setNotification(context: Context, triggerTime: Long) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlertBroadcastReceiver::class.java).apply {
+            putExtra("description", description)
+            putExtra("city", city)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+       // val triggerTime = System.currentTimeMillis() + timeDifference
 
-    private fun setWeatherAlert(startTimeMillis: Long, endTimeMillis: Long, alarmType: Int) {
-        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,
-            PendingIntent.FLAG_IMMUTABLE)
+        // Set the alarm to trigger at the calculated trigger time
+        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+       // alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+        Log.i("TAG", "onTimeSet:save $triggerTime ")
+    }
+    @SuppressLint("ScheduleExactAlarm")
+    private fun setWeatherAlert(time : Long) {
+       val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+       val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
+       val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,
+           PendingIntent.FLAG_IMMUTABLE)
 
-        // Set the alarm based on user input
-        alarmManager.set(AlarmManager.RTC_WAKEUP, startTimeMillis, pendingIntent)
+       // Calculate the time to trigger the alarm (current time + 2 minutes)
+      // val triggerTimeMillis = System.currentTimeMillis() + (1 * 60 * 1000) // Current time + 2 minutes
 
+       // Set the alarm based on calculated trigger time
+       alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+
+       // Log the trigger time for debugging purposes
+      // Log.i("TAG", "Trigger time: ${Date(triggerTimeMillis)}")
         // Save user preferences, such as start/end time and alarm type
       //  saveAlertSettings(startTimeMillis, endTimeMillis, alarmType)
     }
+// @SuppressLint("SimpleDateFormat")
+//    private fun calcDateAndTime(fromDate: String, fromTime: String):Long{
+//        var date =SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+//        var dateAndTime="$fromDate $fromTime"
+//        var lastFormat=date.parse(dateAndTime)
+    //dd-MM-yyyy hh:mm a
+//        return lastFormat?.time ?: 0
+//    }
+//    @SuppressLint("SimpleDateFormat")
+//    private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
+//    val dateTimeString = "$fromDate $fromTime"
+//    val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault())
+//    val selectedTime = dateFormat.parse(dateTimeString)?.time ?: 0
+//
+//    val currentTime = System.currentTimeMillis()
+//
+//    val millisecondsDifference = -1*(selectedTime - currentTime)
+//    Log.i("TAG", "calcDateAndTime: current $currentTime")
+//    Log.i("TAG", "calcDateAndTime: selected $selectedTime")
+//    println("Milliseconds from current time to selected time: $millisecondsDifference")
+//
+//    return selectedTime
+//    }
+@SuppressLint("SimpleDateFormat")
+private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
+    val dateTimeString = "$fromDate $fromTime"
 
+    val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault())
+    val selectedTime = dateFormat.parse(dateTimeString)?.time ?: 0
+
+    val currentTime = System.currentTimeMillis()
+
+    // Calculate the time difference between selected time and current time
+    return selectedTime
+}
+
+  fun setAlarm(){
+      val alarmTime = System.currentTimeMillis() + 60000 // 1 minute from now
+      bindingAlarm.textAlarmTime.text = "city"
+
+      // Set up AlarmManager
+    val  alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+      val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
+     val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+      intent.action = "com.example.ALARM_TRIGGERED" // Custom action string
+
+      // Set alarm to trigger at the specified time
+      alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
+
+      // Dismiss button click listener
+      bindingAlarm.buttonDismiss.setOnClickListener {
+          // Cancel the alarm
+          alarmManager.cancel(pendingIntent)
+          // Close the fragment or handle dismiss action
+
+      }
+  }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//
+//        // Register BroadcastReceiver to handle alarm trigger event
+//        val intentFilter = IntentFilter("com.example.ALARM_TRIGGERED")
+//        requireContext().registerReceiver(alarmReceiver, intentFilter)
+//    }
+//
+//    override fun onDetach() {
+//        super.onDetach()
+//
+//        // Unregister BroadcastReceiver when fragment is detached
+//        requireContext().unregisterReceiver(alarmReceiver)
+//    }
 
 
 

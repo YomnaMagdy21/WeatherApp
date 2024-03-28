@@ -61,17 +61,17 @@ class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
         }
     }
 
-    private fun geCurrentWeather(lat:Double, lon:Double, lang:String, units:String){
-        viewModelScope.launch(Dispatchers.IO){
-            //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,lang,units))
-            _irepo.getCurrentWeather(lat,lon,lang,units)
-                .catch {
-                        e->
-                    _weather.value= UIState.Failure(e)
-                }
-                .collect{
-                    _weather.value= UIState.Success(it)
-                }
-        }
-    }
+//    private fun geCurrentWeather(lat:Double, lon:Double, lang:String, units:String){
+//        viewModelScope.launch(Dispatchers.IO){
+//            //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,lang,units))
+//            _irepo.getCurrentWeather(lat,lon,lang,units)
+//                .catch {
+//                        e->
+//                    _weather.value= UIState.Failure(e)
+//                }
+//                .collect{
+//                    _weather.value= UIState.Success(it)
+//                }
+//        }
+//    }
 }

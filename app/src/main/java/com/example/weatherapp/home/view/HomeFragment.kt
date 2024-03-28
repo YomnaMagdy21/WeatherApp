@@ -129,7 +129,17 @@ class HomeFragment : Fragment() {
 
         homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
         unit=SharedPreference.getUnit(requireContext())
-
+        location = SharedPreference.getLocation(requireContext())
+        lat=SharedPreference.getLat(requireContext())
+        lon=SharedPreference.getLon(requireContext())
+        language=SharedPreference.getLanguage(requireContext())
+        homeViewModel.getWeather(
+            lat,
+            lon,
+            "",
+            unit,
+            "ar"
+        )
            getFreshLocation()
 
 
@@ -183,8 +193,9 @@ class HomeFragment : Fragment() {
             if (location == "map") {
                 bindingMap.btnAddFav.visibility = View.GONE
                 bindingMap.btnAddHome.visibility = View.VISIBLE
-                // homeViewModel.getWeather()
+                // homeViewModel.getWeather(lat,)
             } else {
+                homeViewModel.deleteData()
 
             }
             Log.i("TAG", "onViewCreated: there is internet")
@@ -447,6 +458,7 @@ class HomeFragment : Fragment() {
                     val currentLanguageCode = SharedPreference.getLanguage(requireContext())
                     unit=SharedPreference.getUnit(requireContext())
                    if(location=="gps") {
+                       homeViewModel.deleteData()
 //                       if (currentLanguageCode == "ar") {
 //                           homeViewModel.getWeather(
 //                               currentLatitude,
@@ -476,6 +488,7 @@ class HomeFragment : Fragment() {
                        SharedPreference.saveLat(requireContext(),currentLatitude)
                        SharedPreference.saveLon(requireContext(),currentLongitude)
                    }else{
+                        homeViewModel.deleteData()
                        Log.i("TAG", "onLocationResult:  ")
                        homeViewModel.getWeather(
                            lat,

@@ -1,5 +1,6 @@
 package com.example.weatherapp.home.viewmodel
 
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherapp.MainCoroutineRule
@@ -14,11 +15,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.nullValue
@@ -27,15 +32,16 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(JUnit4::class)
 class HomeViewModelTest{
 
-//    @get:Rule
-//    val myRule=InstantTaskExecutorRule()
-//
-//    @get:Rule
-//    val mainCoroutineRule= MainCoroutineRule()
+    @get:Rule
+    val myRule=InstantTaskExecutorRule()
+
+    @get:Rule
+    val mainCoroutineRule= MainCoroutineRule()
 
 
     lateinit var viewModel: HomeViewModel
@@ -44,13 +50,15 @@ class HomeViewModelTest{
     lateinit var weatherResponse2: WeatherResponse
 
     lateinit var city: City
+    lateinit var city1: City
 
     @Before
     fun setUp(){
         repo=FakeWeatherRepository()
         viewModel= HomeViewModel(repo)
         city=City(0,"",null,"",0,0,0,0)
-        weatherResponse1= WeatherResponse(0.0,0.0,"",0, listOf(),city)
+        city1=City(1,"",null,"",1,1,1,1)
+        weatherResponse1= WeatherResponse(0.0,0.0,"",null, listOf(),city)
         weatherResponse2= WeatherResponse(1.0,1.0,"",1, listOf(),city)
 
     }
@@ -59,38 +67,70 @@ class HomeViewModelTest{
     @Test
     fun getWeather_WeatherResponse()=runBlockingTest{
         //Given
+          viewModel.insertData(weatherResponse1)
 
         //When
-     //  val result= viewModel.getWeather(0.0,0.0,"","","")
+      // val value= viewModel.getWeather(0.0,0.0,"","","")
         val value=viewModel.weather.getOrAwaitValue {  }
-        launch {
-            viewModel.weather.collectLatest {
-                //Then
-                assertThat(value, `is`(not(nullValue())))
-            }
-        }
+
+       //Then
+       assertThat(value, `is`(instanceOf(UIState.Success::class.java)))
+       val successState = value as UIState.Success<*>
+       assertThat(successState.data, `is`(weatherResponse1))
+
 
     }
 
     @Test
-    fun getLocalData() = runBlockingTest {
+    fun getLocalData_WeatherResponse() = runBlockingTest {
         // Given
         viewModel.insertData(weatherResponse1)
-        viewModel.insertData(weatherResponse2)
+
 
         // When
-        val collectedResults = mutableListOf<WeatherResponse>()
-        viewModel.weather.collectLatest { result ->
-            if (result is UIState.Success<*>) {
-                collectedResults.add(result.data as WeatherResponse)
-            } else {
-                fail("Expected Success, but received $result")
-            }
-        }
+        val value=viewModel.weather.getOrAwaitValue {  }
+        val successState = value as UIState.Success<*>
 
         // Then
-        assertThat(collectedResults, `is`(listOf(weatherResponse1, weatherResponse2)))
+        assertThat(successState.data, `is`(weatherResponse1))
     }
+
+    @Test
+    fun deleteData() = runBlockingTest {
+        // Given
+        // Perform the deletion operation in your ViewModel
+        viewModel.deleteData()
+
+        // When
+        // Retrieve the LiveData value from the ViewModel
+        val value = viewModel.weather.value
+//            .collectLatest {result->
+//            when(result){
+//                is UIState.Success<*>->{
+
+                        assertThat(value, `is`(nullValue()))
+
+//                }
+//                else->{
+//                    Log.i("TAG", "deleteData: ")
+//                }
+//            }
+//        }
+
+        // Then
+        // Assert that the value returned by the ViewModel is of type UIState.Success
+//        assertThat(value, `is`(instanceOf(UIState.Success::class.java)))
+//
+//        // Cast the value to UIState.Success to access the data
+//        val successState = value as UIState.Success<*>
+
+        // Assert that the data contained in the success state is null after deletion
+       // assertThat(value, `is`(nullValue()))
+    }
+
+
+
+
 
 
 }

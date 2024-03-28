@@ -17,6 +17,8 @@ import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentSettingBinding
 import com.example.weatherapp.home.view.HomeFragment
+import com.example.weatherapp.home.viewmodel.HomeViewModel
+import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.map.viewmaodel.MapViewModel
 import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
@@ -36,6 +38,9 @@ class SettingFragment : Fragment() {
     private val languageFlow = MutableSharedFlow<String>()
     lateinit var settingViewModel: SettingViewModel
     lateinit var settingViewModelFactory: SettingViewModelFactory
+    lateinit var homeViewModel: HomeViewModel
+    lateinit var homeViewModelFactory: HomeViewModelFactory
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +56,15 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        homeViewModelFactory = HomeViewModelFactory(
+            WeatherRepositoryImp.getInstance(
+                WeatherRemoteDataSourceImp.getInstance(),
+                WeatherLocalDataSourceImp(requireContext())
+            )
+        )
+
+        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+
         settingViewModelFactory = SettingViewModelFactory(
             WeatherRepositoryImp.getInstance(
                 WeatherRemoteDataSourceImp.getInstance(),
@@ -65,13 +79,13 @@ class SettingFragment : Fragment() {
         binding.arabic.setOnClickListener {
             settingViewModel.changeLanguage("ar")
             SharedPreference.saveLanguage(requireContext(),"ar")
-            applyLanguageChanges("ar")
+           // applyLanguageChanges("ar")
 
         }
         binding.english.setOnClickListener {
             settingViewModel.changeLanguage("en")
             SharedPreference.saveLanguage(requireContext(),"en")
-            applyLanguageChanges("en")
+            //applyLanguageChanges("en")
 
         }
 
@@ -95,9 +109,11 @@ class SettingFragment : Fragment() {
                SharedPreference.saveWindUnit(requireContext(),"Imperial")
         }
         binding.gps.setOnClickListener {
+            homeViewModel.deleteData()
             SharedPreference.saveLocation(requireContext(),"gps")
         }
         binding.map.setOnClickListener {
+            homeViewModel.deleteData()
             SharedPreference.saveLocation(requireContext(),"map")
             val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
             transaction.replace(R.id.main, MapFragment())
