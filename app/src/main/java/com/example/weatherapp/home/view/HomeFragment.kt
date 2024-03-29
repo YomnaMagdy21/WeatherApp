@@ -133,13 +133,13 @@ class HomeFragment : Fragment() {
         lat=SharedPreference.getLat(requireContext())
         lon=SharedPreference.getLon(requireContext())
         language=SharedPreference.getLanguage(requireContext())
-        homeViewModel.getWeather(
-            lat,
-            lon,
-            "",
-            unit,
-            "ar"
-        )
+//        homeViewModel.getWeather(
+//            currentLatitude,
+//            currentLongitude,
+//            "",
+//            unit,
+//            "ar"
+//        )
            getFreshLocation()
 
 
@@ -482,7 +482,7 @@ class HomeFragment : Fragment() {
                            currentLongitude,
                            "",
                            unit,
-                           currentLanguageCode
+                           "ar"
                        )
 
                        SharedPreference.saveLat(requireContext(),currentLatitude)
@@ -495,7 +495,7 @@ class HomeFragment : Fragment() {
                            lon,
                            "",
                            unit,
-                           currentLanguageCode
+                           "ar"
                        )
 //                       if (currentLanguageCode == "ar") {
 //                           homeViewModel.getWeather(

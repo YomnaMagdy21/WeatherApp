@@ -73,24 +73,7 @@ class StartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val language=SharedPreference.getLanguage(requireContext())
-        if(language=="en") {
-            val locale = Locale("en")
-            Locale.setDefault(locale)
-            val config = resources.configuration
-            config.setLocale(locale)
-            resources.updateConfiguration(config, resources.displayMetrics)
-           // recreate(requireActivity())
-        }
-        else{
-            val locale = Locale("ar")
-            Locale.setDefault(locale)
-            val config = resources.configuration
-            config.setLocale(locale)
-            resources.updateConfiguration(config, resources.displayMetrics)
-            //recreate(requireActivity())
 
-        }
         showDialogBox()
     }
 
@@ -107,7 +90,7 @@ class StartFragment : Fragment() {
             Toast.makeText(requireContext(),"map", Toast.LENGTH_LONG).show()
           //  location="map"
 //            fragment = MapFragment.newInstance(location)
-            homeViewModel.deleteData()
+
             SharedPreference.saveLocation(requireContext(),"map")
 
         }
@@ -115,13 +98,13 @@ class StartFragment : Fragment() {
             Toast.makeText(requireContext(),"gps", Toast.LENGTH_LONG).show()
             //location="gps"
 //            fragment=HomeFragment.newInstance(location)
-            homeViewModel.deleteData()
+
             SharedPreference.saveLocation(requireContext(),"gps")
 
         }
         bindingDialog.btnSave.setOnClickListener {
             location=SharedPreference.getLocation(requireContext())
-            homeViewModel.deleteData()
+
 
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
             if(location=="map"){

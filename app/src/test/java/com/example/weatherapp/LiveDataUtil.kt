@@ -34,7 +34,6 @@ fun <T> Flow<T>.getOrAwaitValue(
     try {
         afterObserve.invoke()
 
-        // Don't wait indefinitely if the StateFlow is not set.
         if (!latch.await(time, timeUnit)) {
             throw TimeoutException("StateFlow value was never set.")
         }

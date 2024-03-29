@@ -5,8 +5,10 @@ import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.PendingIntent
+import android.app.PendingIntent.getBroadcast
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
@@ -20,7 +22,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.DatePicker
+import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -94,6 +98,8 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
     lateinit var description:String
     var timeDifference:Long=0
     lateinit var bindingAlarm:AlarmBinding
+    lateinit var  alarmManager:AlarmManager
+    lateinit var pendingIntent:PendingIntent
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +124,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -240,7 +246,7 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
 
 
 
-   @RequiresApi(Build.VERSION_CODES.R)
+
    private fun showDialogBox(){
         val dialog=Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -265,10 +271,11 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             alertViewModel.insertData(alert)
             d=calcDateAndTime(alert.fromDate,alert.fromTime)
             // setWeatherAlert(alert)
-           // setWeatherAlert(d)
+          //  setWeatherAlert(d)
+            Log.i("TAG", "showDialogBox1: d2 $d")
              timeDifference = calcDateAndTime(alert.fromDate, alert.fromTime)
-
-            setNotification(requireContext(), timeDifference+10000)
+          // setAlarm()
+            //setNotification(requireContext(), timeDifference+10000)
             Log.i("TAG", "showDialogBox1: d1 $timeDifference")
             isSave=true
 
@@ -403,7 +410,7 @@ val t=startTimeMillis-currentTimeMillis
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
-
+     setAlarm(minuteSaved)
         val triggerTime = calendar1.timeInMillis
         Log.i("TAG", "onTimeSet:triggerTime $triggerTime ")
        // if(isSave) {
@@ -414,7 +421,7 @@ val t=startTimeMillis-currentTimeMillis
       //  }
 
     }
-    @RequiresApi(Build.VERSION_CODES.R)
+
     fun setNotification(context: Context, triggerTime: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlertBroadcastReceiver::class.java).apply {
@@ -483,12 +490,13 @@ private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
     return selectedTime
 }
 
-  fun setAlarm(){
-      val alarmTime = System.currentTimeMillis() + 60000 // 1 minute from now
+  fun setAlarm(min:Int){
+      val calendar = Calendar.getInstance()
+      val alarmTime = System.currentTimeMillis() + (min-calendar.get(Calendar.MINUTE))*10000 +60000// 1 minute from now
       bindingAlarm.textAlarmTime.text = "city"
 
       // Set up AlarmManager
-    val  alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+      alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
       val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
      val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -498,11 +506,17 @@ private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
       alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
 
       // Dismiss button click listener
-      bindingAlarm.buttonDismiss.setOnClickListener {
+      val view = LayoutInflater.from(requireContext()).inflate(R.layout.alarm, null, false)
+      val alarmMsg = view.findViewById<TextView>(R.id.text_alarm_time)
+      val btnCancel = view.findViewById<Button>(R.id.button_dismiss)
+
+      btnCancel.setOnClickListener {
           // Cancel the alarm
           alarmManager.cancel(pendingIntent)
           // Close the fragment or handle dismiss action
-
+          requireActivity().runOnUiThread {
+              Toast.makeText(requireContext(), "Alarm canceled", Toast.LENGTH_SHORT).show()
+          }
       }
   }
 //    override fun onAttach(context: Context) {
@@ -567,7 +581,19 @@ private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
     }
 
     override fun onClickToRemove(alert: AlertMessage) {
+        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(activity, AlertBroadcastReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,PendingIntent.FLAG_IMMUTABLE)
+
+        bindingAlarm.buttonDismiss.setOnClickListener {
+            alarmManager.cancel(pendingIntent)
+            // Close the fragment or handle dismiss action
+            requireActivity().runOnUiThread {
+                Toast.makeText(requireContext(), "Alarm canceled", Toast.LENGTH_SHORT).show()
+            }
+        }
         alertViewModel.deleteData(alert)
+
     }
 
 }

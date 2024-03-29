@@ -5,4 +5,5 @@ import com.example.weatherapp.model.Favorite
 
 interface OnAlertClickListener {
     fun onClickToRemove(alert: AlertMessage)
+
 }

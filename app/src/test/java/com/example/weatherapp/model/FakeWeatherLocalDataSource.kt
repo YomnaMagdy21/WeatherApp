@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flowOf
 class FakeWeatherLocalDataSource:WeatherLocalDataSource {
 
     var homeData:MutableList<WeatherResponse> = mutableListOf()
+    var favData:MutableList<Favorite> = mutableListOf()
    //  var repo: FakeWeatherRepository=FakeWeatherRepository()
    private val dao: WeatherDAO by lazy {
        val db: WeatherDataBase = WeatherDataBase.getInstance(ApplicationProvider.getApplicationContext())
@@ -32,11 +33,11 @@ class FakeWeatherLocalDataSource:WeatherLocalDataSource {
     }
 
     override suspend fun insertFav(favorite: Favorite) {
-       dao.insertToFavorite(favorite)
+       favData.add(favorite)
     }
 
     override suspend fun deleteFav(favorite: Favorite) {
-        TODO("Not yet implemented")
+        favData.remove(favorite)
     }
 
     override fun getStoredAlert(): Flow<List<AlertMessage>> {

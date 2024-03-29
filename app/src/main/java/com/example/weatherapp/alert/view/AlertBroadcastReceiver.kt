@@ -7,14 +7,20 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.PixelFormat
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -23,6 +29,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
+import com.example.weatherapp.databinding.AlarmBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.model.WeatherRepository
@@ -43,6 +50,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
     lateinit var weatherRepository: WeatherRepository
     var lat = 0.0
     var lon = 0.0
+ //   lateinit var bindingAlarm: AlarmBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override  fun onReceive(context: Context?, intent: Intent?) {
@@ -54,6 +62,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
         // Alarm triggered, execute your logic here
 
 
+
         lat = SharedPreference.getLat(context)
         lon = SharedPreference.getLon(context)
 
@@ -62,7 +71,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
             WeatherLocalDataSourceImp(context)
         )
 
-        val result = weatherRepository.getWeather(lat, lon, "", "ar", "standard")
+        val result = weatherRepository.getWeather(lat, lon, "", "standard", "ar")
         val description = intent.getStringExtra("description")
         val city = intent.getStringExtra("city")
 
@@ -77,12 +86,12 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
 
                 // Retrieve information from the intent (if needed)
                 val message = intent.getStringExtra("message")
-                if (city != null && description != null) {
+                //if (city != null && description != null) {
                     // Create a notification channel (for Android O and above)
-                    createNotification(context, description, city)
-                 //   showAlarm(context)
+                    createNotification(context, dataList, city)
+                    showAlarm(context, dataList, city)
 
-                }
+              //  }
 
             }
 
@@ -126,12 +135,29 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
 
     }
 
-    suspend fun showAlarm(context:Context){
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun showAlarm(context:Context,d:String,c:String){
+        // Check for the permission and request it if not granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Add this flag
+            context.startActivity(intent)
+            return  // Return if the permission is not granted yet
+        }
+
         val LAYOUT_FLAG = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         else
             WindowManager.LayoutParams.TYPE_PHONE
         val view = LayoutInflater.from(context).inflate(R.layout.alarm, null, false)
+        var alarmMsg=view.findViewById(R.id.text_alarm_time)  as TextView
+        alarmMsg.text=d+" "+c
+        var btnCancel=view.findViewById(R.id.button_dismiss)  as Button
+        btnCancel.setBackgroundColor(Color.CYAN)
+          btnCancel.setOnClickListener {
+              view.visibility=View.GONE
+          }
+
         val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
         val layoutParams =
             WindowManager.LayoutParams(
@@ -141,6 +167,13 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
             )
+        layoutParams.gravity = Gravity.TOP
+        layoutParams.alpha=0.8f
+        layoutParams.horizontalWeight=50f
+        layoutParams.horizontalMargin=50f
+        layoutParams.windowAnimations=20
+        layoutParams.y=20
+
 
         withContext(Dispatchers.Main) {
             windowManager.addView(view, layoutParams)
