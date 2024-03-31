@@ -26,7 +26,7 @@ class FavoriteViewModel (private val _irepo: WeatherRepository): ViewModel(){
 
         }
     }
-   private fun getLocalFavorites()= viewModelScope.launch{
+    fun getLocalFavorites()= viewModelScope.launch{
         _irepo.getFavoriteWeather()
             .catch { e->
                 _favorite.value= UIState.Failure(e)

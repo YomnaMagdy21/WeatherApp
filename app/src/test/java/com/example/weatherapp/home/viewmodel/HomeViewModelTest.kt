@@ -14,6 +14,7 @@ import junit.framework.TestCase.fail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.getAndUpdate
@@ -63,11 +64,11 @@ class HomeViewModelTest{
 
     }
 
-   // @OptIn(ExperimentalCoroutinesApi::class)
+   @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getWeather_WeatherResponse()=runBlockingTest{
         //Given
-          viewModel.insertData(weatherResponse1)
+          viewModel.getWeather(0.0,0.0,"","","")
 
         //When
       // val value= viewModel.getWeather(0.0,0.0,"","","")
@@ -77,6 +78,22 @@ class HomeViewModelTest{
        assertThat(value, `is`(instanceOf(UIState.Success::class.java)))
        val successState = value as UIState.Success<*>
        assertThat(successState.data, `is`(weatherResponse1))
+
+//       launch {
+//           val value=viewModel.weather.collectLatest { result ->
+//               when (result) {
+//                   is UIState.Success<*> -> {
+//                       assertThat(result.data, `is`(weatherResponse1))
+//                       cancel()
+//
+//                   }
+//
+//                   else -> {
+//
+//                   }
+//               }
+//
+//           }
 
 
     }
@@ -99,16 +116,23 @@ class HomeViewModelTest{
     fun deleteData() = runBlockingTest {
         // Given
         // Perform the deletion operation in your ViewModel
+        viewModel.insertData(weatherResponse2)
         viewModel.deleteData()
 
         // When
         // Retrieve the LiveData value from the ViewModel
-        val value = viewModel.weather.value
+        val value = viewModel.weather.getOrAwaitValue {  }
+
+
+        val successState = value as UIState.Success<*>
+
+        // Then
+        assertThat(successState, `is`(nullValue()))
 //            .collectLatest {result->
 //            when(result){
 //                is UIState.Success<*>->{
 
-                        assertThat(value, `is`(nullValue()))
+                     //   assertThat(value, `is`(nullValue()))
 
 //                }
 //                else->{

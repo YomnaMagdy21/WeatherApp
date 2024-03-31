@@ -11,6 +11,8 @@ object SharedPreference {
     private const val KEY_WIND_SPEED = "wind_speed"
     private const val KEY_LAT = "lat"
     private const val KEY_LON = "lon"
+    private const val KEY_INITIAL = "KEY_INITIAL"
+
 
     fun saveUnit(context: Context, unite: String) {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -68,5 +70,17 @@ object SharedPreference {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return prefs.getString(KEY_LANGUAGE, "") ?: ""
     }
+
+    fun saveInitialTime(context: Context, unite: String) {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_INITIAL, unite).apply()
+    }
+
+    fun getInitialTime(context: Context): String {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_INITIAL, "") ?: "first"
+    }
+
+
 
 }

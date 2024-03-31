@@ -40,10 +40,11 @@ class StartFragment : Fragment() {
     lateinit var bindingDialog:LocationAlertBinding
     lateinit var navController: NavController
     lateinit var bindingMain: ActivityMainBinding
-    lateinit var location:String
+
     lateinit var fragment: Fragment
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
+    lateinit var location:String
     lateinit var language:String
     lateinit var sharedPreferences:SharedPreferences
 
@@ -78,7 +79,7 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         language=SharedPreference.getLanguage(requireContext())
-//              updateAppContext(language )
+              updateAppContext(language )
 
 
 
@@ -113,7 +114,7 @@ class StartFragment : Fragment() {
         bindingDialog.btnSave.setOnClickListener {
             location=SharedPreference.getLocation(requireContext())
 
-             homeViewModel.deleteData()
+            // homeViewModel.deleteData()
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
             if(location=="map"){
                 val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
@@ -158,7 +159,7 @@ class StartFragment : Fragment() {
         val config = resources.configuration
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
-        recreate(requireActivity()) // Recreate activity to apply language changes
+       // recreate(requireActivity()) // Recreate activity to apply language changes
     }
 
 //    fun passLocation(loc:String){

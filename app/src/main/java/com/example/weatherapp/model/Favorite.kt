@@ -17,5 +17,5 @@ data class Favorite(
     var city: String
 ): Serializable {
 
-   // constructor():this(0.0,0.0,City(1,"",null,"",1,1,1,1))
+    constructor():this(0.0,0.0,"")
 }

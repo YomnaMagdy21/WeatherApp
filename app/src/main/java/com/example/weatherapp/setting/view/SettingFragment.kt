@@ -75,7 +75,7 @@ class SettingFragment : Fragment() {
         settingViewModel =
             ViewModelProvider(this, settingViewModelFactory).get(SettingViewModel::class.java)
 
-   homeViewModel.deleteData()
+
         binding.arabic.setOnClickListener {
             settingViewModel.changeLanguage("ar")
             SharedPreference.saveLanguage(requireContext(),"ar")
@@ -96,22 +96,27 @@ class SettingFragment : Fragment() {
 
         binding.celsius.setOnClickListener {
             SharedPreference.saveUnit(requireContext(),"metric")
+            homeViewModel.deleteData()
 
         }
         binding.fahrenheit.setOnClickListener {
             SharedPreference.saveUnit(requireContext(),"imperial")
+            homeViewModel.deleteData()
 
         }
         binding.kelvin.setOnClickListener {
             SharedPreference.saveUnit(requireContext(),"standard")
+            homeViewModel.deleteData()
 
         }
         binding.mps.setOnClickListener {
             SharedPreference.saveWindUnit(requireContext(),"Metric")
+            homeViewModel.deleteData()
 
         }
         binding.mph.setOnClickListener {
                SharedPreference.saveWindUnit(requireContext(),"Imperial")
+            homeViewModel.deleteData()
         }
         binding.gps.setOnClickListener {
             homeViewModel.deleteData()

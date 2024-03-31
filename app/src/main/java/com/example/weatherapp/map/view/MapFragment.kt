@@ -4,6 +4,7 @@ package com.example.weatherapp.map.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -15,9 +16,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.weatherapp.MainActivity
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentMapBinding
@@ -160,6 +163,11 @@ class MapFragment : Fragment()  {
             mapViewModel.insertFavorite(favorite)
         }
 
+//        binding.btnAddHome.setOnClickListener {
+//
+//
+//        }
+
     }
 
 
@@ -275,6 +283,15 @@ class MapFragment : Fragment()  {
 //                                transaction.replace(R.id.main, HomeFragment())
 //                                transaction.addToBackStack(null)
 //                                transaction.commit()
+                                homeViewModel.deleteData()
+                                Toast.makeText(requireContext(), "Set Location Successfully", Toast.LENGTH_LONG).show()
+
+//                                val transaction = (requireContext() as AppCompatActivity).supportFragmentManager.beginTransaction()
+//                                transaction.replace(R.id.splash, MainActivity())
+//                                transaction.addToBackStack(null)
+//                                transaction.commit()
+                                val intent= Intent(requireContext(),MainActivity::class.java)
+                                startActivity(intent)
                            }
                         }
                     //  favorite=Favorite(lat,lon,City(1,city, Coord(lat,lon),country,1,1,1,1))

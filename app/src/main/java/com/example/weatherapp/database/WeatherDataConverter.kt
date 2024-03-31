@@ -12,6 +12,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class WeatherDataConverter {
+
+
     private val gson = Gson()
 
     @TypeConverter

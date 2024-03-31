@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.flowOf
 class FakeWeatherLocalDataSource:WeatherLocalDataSource {
 
     var homeData:MutableList<WeatherResponse> = mutableListOf()
-    var favData:MutableList<Favorite> = mutableListOf()
+    var favData:MutableList<List<Favorite>> = mutableListOf()
+    var alertData:MutableList<AlertMessage> = mutableListOf()
    //  var repo: FakeWeatherRepository=FakeWeatherRepository()
-   private val dao: WeatherDAO by lazy {
-       val db: WeatherDataBase = WeatherDataBase.getInstance(ApplicationProvider.getApplicationContext())
-       db.getWeatherDao()
-   }
+//   private val dao: WeatherDAO by lazy {
+//       val db: WeatherDataBase = WeatherDataBase.getInstance(ApplicationProvider.getApplicationContext())
+//       db.getWeatherDao()
+//   }
     override suspend fun insert(weatherResponse: WeatherResponse) {
         homeData.add(weatherResponse)
     }
@@ -29,26 +30,26 @@ class FakeWeatherLocalDataSource:WeatherLocalDataSource {
     }
 
     override fun getStoredFavorite(): Flow<List<Favorite>> {
-        TODO("Not yet implemented")
+        return flowOf()
     }
 
     override suspend fun insertFav(favorite: Favorite) {
-       favData.add(favorite)
+       favData.add(listOf(favorite))
     }
 
     override suspend fun deleteFav(favorite: Favorite) {
-        favData.remove(favorite)
+        favData.remove(listOf(favorite))
     }
 
     override fun getStoredAlert(): Flow<List<AlertMessage>> {
-        TODO("Not yet implemented")
+        return flowOf()
     }
 
     override suspend fun insertAlert(alert: AlertMessage) {
-        TODO("Not yet implemented")
+        alertData.add(alert)
     }
 
     override suspend fun deleteAlert(alert: AlertMessage) {
-        TODO("Not yet implemented")
+        alertData.remove(alert)
     }
 }
