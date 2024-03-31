@@ -25,7 +25,7 @@ class WeatherRepositoryImp(private var weatherRemoteDataSource: WeatherRemoteDat
     }
 
     override  fun getWeather(lat:Double, lon:Double, exclude:String, units:String, lang:String): Flow<WeatherResponse> {
-        return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,lang,units)
+        return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,units,lang)
     }
 
     override suspend fun getCurrentWeather(

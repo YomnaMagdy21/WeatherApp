@@ -75,19 +75,24 @@ class SettingFragment : Fragment() {
         settingViewModel =
             ViewModelProvider(this, settingViewModelFactory).get(SettingViewModel::class.java)
 
-
+   homeViewModel.deleteData()
         binding.arabic.setOnClickListener {
             settingViewModel.changeLanguage("ar")
             SharedPreference.saveLanguage(requireContext(),"ar")
            // applyLanguageChanges("ar")
+            homeViewModel.deleteData()
+         //   updateAppContext("ar")
 
         }
         binding.english.setOnClickListener {
             settingViewModel.changeLanguage("en")
             SharedPreference.saveLanguage(requireContext(),"en")
             //applyLanguageChanges("en")
+            homeViewModel.deleteData()
+           // updateAppContext("en")
 
         }
+
 
         binding.celsius.setOnClickListener {
             SharedPreference.saveUnit(requireContext(),"metric")
@@ -163,16 +168,16 @@ class SettingFragment : Fragment() {
     private fun applyLanguageChanges(language: String) {
         saveLanguagePreference(requireContext(), language)
        // emitLanguageChange(language) // Emit language change through MutableSharedFlow
-        updateAppContext(language)
+      //  updateAppContext(language)
     }
-    private fun updateAppContext(language: String) {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-        recreate(requireActivity()) // Recreate activity to apply language changes
-    }
+//    private fun updateAppContext(language: String) {
+//        val locale = Locale(language)
+//        Locale.setDefault(locale)
+//        val config = resources.configuration
+//        config.setLocale(locale)
+//        resources.updateConfiguration(config, resources.displayMetrics)
+//        recreate(requireActivity()) // Recreate activity to apply language changes
+//    }
 
 }
 

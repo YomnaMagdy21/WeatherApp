@@ -1,8 +1,10 @@
 package com.example.weatherapp.alert.view
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
@@ -11,6 +13,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -26,6 +29,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
@@ -153,10 +157,10 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
         var alarmMsg=view.findViewById(R.id.text_alarm_time)  as TextView
         alarmMsg.text=d+" "+c
         var btnCancel=view.findViewById(R.id.button_dismiss)  as Button
-        btnCancel.setBackgroundColor(Color.CYAN)
-          btnCancel.setOnClickListener {
-              view.visibility=View.GONE
-          }
+        btnCancel.setBackgroundColor(Color.rgb(138,199,219))
+        btnCancel.shadowRadius
+
+
 
         val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
         val layoutParams =
@@ -167,19 +171,39 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
             )
-        layoutParams.gravity = Gravity.TOP
-        layoutParams.alpha=0.8f
-        layoutParams.horizontalWeight=50f
-        layoutParams.horizontalMargin=50f
-        layoutParams.windowAnimations=20
-        layoutParams.y=20
 
+        layoutParams.alpha=0.9f
+        layoutParams.horizontalWeight=50f
+
+        layoutParams.windowAnimations=20
+
+        layoutParams.width=750
+        layoutParams.buttonBrightness=20f
+        layoutParams.gravity=Gravity.CENTER_HORIZONTAL
+        layoutParams.gravity = Gravity.TOP
+
+        val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TITLE_COLUMN_INDEX)
+        val ringtone = RingtoneManager.getRingtone(context.applicationContext, ringtoneUri)
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val originalIntent = Intent(context, AlertBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, originalIntent, PendingIntent.FLAG_IMMUTABLE)
+        alarmManager?.cancel(pendingIntent)
 
         withContext(Dispatchers.Main) {
             windowManager.addView(view, layoutParams)
             view.visibility = View.VISIBLE
+            ringtone.play()
            // messageTextView.text = message
         }
+        btnCancel.setBackgroundResource(R.drawable.rounded_button)
+        btnCancel.setOnClickListener {
+            view.visibility=View.GONE
+            ringtone.stop()
+
+        }
+
+
     }
 }
 

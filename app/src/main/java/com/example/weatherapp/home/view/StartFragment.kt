@@ -1,6 +1,7 @@
 package com.example.weatherapp.home.view
 
 import android.app.Dialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -32,6 +33,7 @@ import com.example.weatherapp.util.SharedPreference
 import java.util.Locale
 
 
+
 class StartFragment : Fragment() {
 
     lateinit var binding:FragmentStartBinding
@@ -42,6 +44,8 @@ class StartFragment : Fragment() {
     lateinit var fragment: Fragment
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
+    lateinit var language:String
+    lateinit var sharedPreferences:SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +77,10 @@ class StartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        language=SharedPreference.getLanguage(requireContext())
+//              updateAppContext(language )
+
+
 
         showDialogBox()
     }
@@ -105,7 +113,7 @@ class StartFragment : Fragment() {
         bindingDialog.btnSave.setOnClickListener {
             location=SharedPreference.getLocation(requireContext())
 
-
+             homeViewModel.deleteData()
             Toast.makeText(requireContext(), "save", Toast.LENGTH_LONG).show()
             if(location=="map"){
                 val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
@@ -143,6 +151,14 @@ class StartFragment : Fragment() {
 
         dialog.show()
 
+    }
+    private fun updateAppContext(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+        recreate(requireActivity()) // Recreate activity to apply language changes
     }
 
 //    fun passLocation(loc:String){
