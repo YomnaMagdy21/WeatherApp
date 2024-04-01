@@ -52,13 +52,7 @@ class FavoriteAdapter(var context: Context, var listener: OnFavoriteClickListene
         }
 
 
-//        holder.binding.tempDesc.text = current.temp.toString()
-//        holder.binding.tempNo.text = current.dt.toString()
-//        var iconName=current.weather[0].icon
-//        Glide.with(context).load(" https://openweathermap.org/img/wn/$iconName@2x.png").into(holder.binding.imgWeather)
-//        holder.binding.btnFavRemove.setOnClickListener{
-//            listener.onClick(current)
-//        }
+
 
 
     }

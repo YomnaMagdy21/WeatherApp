@@ -12,6 +12,10 @@ object SharedPreference {
     private const val KEY_LAT = "lat"
     private const val KEY_LON = "lon"
     private const val KEY_INITIAL = "KEY_INITIAL"
+    private const val KEY_ALERT = "alert"
+    private const val KEY_CANCEL = "cancel"
+
+
 
 
     fun saveUnit(context: Context, unite: String) {
@@ -79,6 +83,25 @@ object SharedPreference {
     fun getInitialTime(context: Context): String {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return prefs.getString(KEY_INITIAL, "") ?: "first"
+    }
+    fun saveAlert(context: Context, unite: String) {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_ALERT, unite).apply()
+    }
+
+    fun getAlert(context: Context): String {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_ALERT, "") ?: ""
+    }
+
+    fun saveCancel(context: Context, unite: String) {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_CANCEL, unite).apply()
+    }
+
+    fun getCancel(context: Context): String {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_CANCEL, "") ?: ""
     }
 
 

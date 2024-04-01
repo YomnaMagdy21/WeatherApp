@@ -108,13 +108,6 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
     }
 
 
-    companion object {
-         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavoriteFragment().apply {
-
-            }
-    }
 
     override fun onClickToRemove(favorite: Favorite) {
         favoriteViewModel.deleteFavorite(favorite)

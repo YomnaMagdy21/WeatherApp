@@ -21,9 +21,5 @@ class SettingViewModel  (private val _irepo: WeatherRepository): ViewModel(){
         }
     }
 
-    fun changeUnit(string: String){
-
-    }
-
 
 }

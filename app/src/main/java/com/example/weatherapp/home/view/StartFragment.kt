@@ -124,30 +124,7 @@ class StartFragment : Fragment() {
             }
             dialog.dismiss()
 
-//            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-//            transaction.replace(R.id.main, fragment)
-//            transaction.addToBackStack(null)
-//            transaction.commit()
 
-
-
-//            bindingMain = ActivityMainBinding.inflate(layoutInflater)
-//
-//            navController = Navigation.findNavController(requireActivity(), R.id.nav_home_fragment)
-//            NavigationUI.setupWithNavController(bindingMain.bottomAppBar, navController)
-//            bindingMain.bottomAppBar.setOnNavigationItemSelectedListener { item ->
-//                when (item.itemId) {
-//                    R.id.home -> {
-//                        navController.navigate(R.id.homeFragment)
-//                        return@setOnNavigationItemSelectedListener true
-//                    }
-//
-//                    else-> false
-//
-//
-//                }
-//
-//            }
         }
 
         dialog.show()
@@ -159,24 +136,10 @@ class StartFragment : Fragment() {
         val config = resources.configuration
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
-       // recreate(requireActivity()) // Recreate activity to apply language changes
+
     }
 
-//    fun passLocation(loc:String){
-//        val fragmentB = HomeFragment.newInstance(loc)
-//        val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-//        transaction.replace(R.id.main, fragmentB)
-//        transaction.addToBackStack(null)
-//        transaction.commit()
-//    }
 
-    companion object {
-            @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StartFragment().apply {
-                arguments = Bundle().apply {
 
-                }
-            }
-    }
+
 }

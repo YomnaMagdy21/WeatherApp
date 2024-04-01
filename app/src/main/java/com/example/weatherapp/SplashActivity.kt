@@ -16,7 +16,10 @@ import com.example.weatherapp.databinding.AlertDialogBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.home.view.StartFragment
 import com.example.weatherapp.map.view.MapFragment
+import com.example.weatherapp.setting.viewmodel.SettingViewModel
+
 import com.example.weatherapp.util.SharedPreference
+import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
 
@@ -33,6 +36,10 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         language=SharedPreference.getLanguage(this)
+      // language= MyApplication().getAppViewModel().toString()
+
+        Log.i("TAG", "onCreate:$language")
+        updateAppContext(language)
         initialTime=SharedPreference.getInitialTime(this)
         Log.i("TAG", "onCreate: KEY_INITIAL $initialTime")
 
@@ -109,6 +116,13 @@ class SplashActivity : AppCompatActivity() {
 
         dialog.show()
 
+    }
+    private fun updateAppContext(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
 }

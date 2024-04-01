@@ -70,14 +70,16 @@ class HomeFragment : Fragment() {
     var currentLatitude = 31.1964949
     var currentLongitude = 29.9273458
     lateinit var language: String
+    lateinit var  unit:String
+    var lat:Double=0.0
+    var lon:Double=0.0
     var weatherRequested = false
     private var previousLanguageCode: String? = null
     lateinit var bindingMap: FragmentMapBinding
-    lateinit var  unit:String
+
     lateinit var unitOfWindSpeed:String
      lateinit var location:String
-     var lat:Double=0.0
-     var lon:Double=0.0
+
     var firstTime=false
 
 
@@ -155,32 +157,6 @@ class HomeFragment : Fragment() {
         setUpRecyclerViewHour()
         setUpRecyclerViewDay()
 
-//
-//        if (!weatherRequested) { // Check if weather has not been requested yet
-//            getFreshLocation() // Get fresh location first
-//            weatherRequested = true // Set flag to indicate weather request has been made
-//        }
-        val currentLanguageCode = Locale.getDefault().language
-
-//        if (currentLanguageCode != previousLanguageCode || !weatherRequested) {
-//            // Update the previous language code
-//            previousLanguageCode = currentLanguageCode
-//
-//            // Call getFreshLocation() with the current language code
-//            getFreshLocation()
-//
-//            // Set the weatherRequested flag to true to indicate that weather request has been made
-//            weatherRequested = true
-//        }
-
-        //  homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", "en")
-
-
-        //  getFreshLocation()
-        // showDialogBox()
-//        homeViewModel.weather.observe(requireActivity()){ days ->
-//            dayAdapter.submitList(days.list)
-//        }
         unit=SharedPreference.getUnit(requireContext())
          location = SharedPreference.getLocation(requireContext())
         lat=SharedPreference.getLat(requireContext())
@@ -235,13 +211,13 @@ class HomeFragment : Fragment() {
 
                         else -> {
                             binding.progBar.visibility = View.GONE
-                            // if(isSuccess) {
+
                             Toast.makeText(
                                 requireContext(),
                                 "there is problem in server",
                                 Toast.LENGTH_LONG
                             ).show()
-//                                isSuccess=false
+//
 //                            }
 
                         }
@@ -277,14 +253,14 @@ class HomeFragment : Fragment() {
 
 
                         else -> {
-                            //  if(isFailure) {
+
                             binding.progBar.visibility = View.GONE
                             Toast.makeText(
                                 requireContext(),
                                 "there is problem in Network connection",
                                 Toast.LENGTH_LONG
                             ).show()
-//                                isFailure=false
+//
 //                            }
 
                         }
@@ -294,28 +270,11 @@ class HomeFragment : Fragment() {
 
         }
 
-//        if(!firstTime) {
-//
-//            showDialogBox()
-//            firstTime=true
-//        }
-
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-//
-//        if (!weatherRequested) {
-//            getFreshLocation()
-//            weatherRequested = true
-//        }
-//        unit=SharedPreference.getUnit(requireContext())
-//
-//        getFreshLocation()
 
 
     }
+
+
 
     private fun getLanguagePreference(context: Context): String {
         val languageCode = Locale.getDefault().language
@@ -456,8 +415,6 @@ class HomeFragment : Fragment() {
 
 //                    val languageCode = Locale.getDefault().language
                     //  val lang=getLanguagePreference(requireContext())
-                    val languageCode = Locale.getDefault().language
-                    Log.i("TAG", "onCreateView: lang code is $languageCode ")
                     val currentLanguageCode = SharedPreference.getLanguage(requireContext())
                     unit=SharedPreference.getUnit(requireContext())
                    if(location=="gps") {
@@ -518,20 +475,11 @@ class HomeFragment : Fragment() {
 //                           )
 //
 //                       }
-//                       SharedPreference.saveLat(requireContext(),lat)
+                       SharedPreference.saveLat(requireContext(),lat)
                        SharedPreference.saveLon(requireContext(),lon)
                    }
 
 
-//                    homeViewModel.getWeather(
-//                        currentLatitude,
-//                        currentLongitude,
-//                        "",
-//                        "",
-//                        languageCode
-//                    )
-
-                    //   Log.i("TAG", "onViewCreated: language is $lang")
 
                 }
 
@@ -544,40 +492,7 @@ class HomeFragment : Fragment() {
             Looper.myLooper()
         )
     }
-//@SuppressLint("MissingPermission")
-//fun getFreshLocation() {
-//    if (::fusedClient.isInitialized && ::locationCallback.isInitialized) {
-//        // If fusedClient and locationCallback are already initialized,
-//        // remove any existing location updates to prevent duplicates
-//        fusedClient.removeLocationUpdates(locationCallback)
-//    }
-//
-//    fusedClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-//    val locationRequest: LocationRequest = LocationRequest.create().apply {
-//        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-//        interval = 100000000000 // Update interval in milliseconds (set to a large value)
-//    }
-//
-//    locationCallback = object : LocationCallback() {
-//        override fun onLocationResult(locationResult: LocationResult) {
-//            val lastLocation = locationResult.lastLocation
-//            if (lastLocation != null) {
-//                currentLatitude = lastLocation.latitude
-//                currentLongitude = lastLocation.longitude
-//
-////                val currentLanguageCode = Locale.getDefault().language
-////                // Check if the language code has changed since the last call
-////                if (currentLanguageCode != previousLanguageCode) {
-////                    previousLanguageCode = currentLanguageCode
-////                    homeViewModel.getWeather(currentLatitude, currentLongitude, "", "", currentLanguageCode)
-////                }
-//            }
-//        }
-//    }
 
-//    // Request location updates
-//    fusedClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-//}
 
 
     private fun setUpRecyclerViewHour() {
@@ -599,29 +514,9 @@ class HomeFragment : Fragment() {
         }
 
     }
-//    companion object {
-//        @JvmStatic
-//        fun newInstance(favorite: Favorite) =
-//            FavDetailsFragment().apply {
-//                arguments = Bundle().apply {
-//                    putSerializable("favorite", favorite)
-//
-//                }
-//            }
-//    }
-//}
 
 
 
-        fun getCurrent() {
 
-        }
-        companion object {
-            fun newInstance(location:String) =
-                HomeFragment().apply {
-                    arguments = Bundle().apply {
-                     putString("loc",location)
-                    }
-                }
-        }
+
     }

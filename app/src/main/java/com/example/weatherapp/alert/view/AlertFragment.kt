@@ -49,6 +49,7 @@ import com.example.weatherapp.model.AlertMessage
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
+import com.example.weatherapp.util.SharedPreference
 import com.example.weatherapp.util.UIState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -100,6 +101,8 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
     lateinit var bindingAlarm:AlarmBinding
     lateinit var  alarmManager:AlarmManager
     lateinit var pendingIntent:PendingIntent
+    lateinit var alertWay:String
+     var intent:Intent=Intent()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,7 +154,6 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             showDialogBox()
 
         }
-//        setWeatherAlert(10,20,20)
 
 
         setUpRecyclerView()
@@ -242,7 +244,10 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             }
         }
        // setAlarm()
-        cancelAlarm()
+//        AlertBroadcastReceiver().btnCancel.setOnClickListener {
+//            alertViewModel.deleteData(alert)
+//        }
+       // cancelAlarm()
     }
 
 
@@ -267,6 +272,12 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             getDateAndTime()
 
         }
+       bindingDialog.alarm.setOnClickListener {
+           SharedPreference.saveAlert(requireContext(),"alarm")
+       }
+       bindingDialog.notification.setOnClickListener {
+           SharedPreference.saveAlert(requireContext(),"notification")
+       }
         bindingDialog.btnSave.setOnClickListener {
             Toast.makeText(requireContext(),"save",Toast.LENGTH_LONG).show()
             alertViewModel.insertData(alert)
@@ -280,12 +291,13 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
             var to=triggerTime(alert.fromDate,alert.fromTime)
            // cancelAlarm(to+10000)
             var a=to.timeInMillis+2500009458
-            setAlarm(a)
+           // setAlarm(a)
+
 
             //setNotification(requireContext(), timeDifference+10000)
             Log.i("TAG", "showDialogBox1: d1 ${to.timeInMillis}")
             isSave=true
-
+            intent.action = "com.example.ALARM_TRIGGERED"
 
             dialog.dismiss()
 
@@ -374,7 +386,7 @@ val t=startTimeMillis-currentTimeMillis
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
-    // setAlarm(minuteSaved)
+     setAlarm(minuteSaved)
         val triggerTime = calendar1.timeInMillis
         Log.i("TAG", "onTimeSet:triggerTime $triggerTime ")
        // if(isSave) {
@@ -406,7 +418,7 @@ val t=startTimeMillis-currentTimeMillis
             dateFrom="$daySaved-$monthSaved-$yearSaved"
             bindingDialog.fromDate.text = "$daySaved-$monthSaved-$yearSaved"
             bindingDialog.fromTime.text = String.format("%02d:%02d %s", formattedHour, minuteSaved, timeFormat)
-            timeFrom=String.format("%02d:%02d %s", formattedHour, minuteSaved,timeFormat)
+            timeFrom=String.format(Locale.ENGLISH,"%02d:%02d %s", formattedHour, minuteSaved,timeFormat)
 
             isFromButtonClicked=false
         }else{
@@ -415,7 +427,7 @@ val t=startTimeMillis-currentTimeMillis
             dateTo="$daySaved-$monthSaved-$yearSaved"
             bindingDialog.toDate.text = "$daySaved-$monthSaved-$yearSaved"
             bindingDialog.toTime.text = String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
-            timeTo=String.format("%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
+            timeTo=String.format(Locale.ENGLISH,"%02d:%02d %s", hourOfDay, minuteSaved,timeFormat)
             isFromButtonClicked=true
             //endTimeMillis = calendarTo.timeInMillis
         }
@@ -433,7 +445,7 @@ val t=startTimeMillis-currentTimeMillis
 
 
   @SuppressLint("ScheduleExactAlarm")
-  fun setAlarm(min:Long){
+  fun setAlarm(min:Int){
       val calendar = Calendar.getInstance()
       val currentTimeMillis = calendar.getTimeInMillis()
       val alarmTime = currentTimeMillis + (min - calendar.get(Calendar.MINUTE)) * 20000 // Convert minutes to milliseconds
@@ -444,8 +456,8 @@ val t=startTimeMillis-currentTimeMillis
        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
       val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
        pendingIntent = PendingIntent.getBroadcast(requireContext(), alert.id, intent, PendingIntent.FLAG_IMMUTABLE)
-      intent.action = "com.example.ALARM_TRIGGERED" // Custom action string
-      alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, min, pendingIntent)
+       // Custom action string
+      alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
 
       // Calculate the time difference between current time and alarm time
       val timeDifference = alarmTime - currentTimeMillis
@@ -455,14 +467,14 @@ val t=startTimeMillis-currentTimeMillis
 
   }
 
-    fun cancelAlarm(){
-        val cancelIntent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
-        pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, cancelIntent, PendingIntent.FLAG_IMMUTABLE)
-        val cancelTime = System.currentTimeMillis() + timeDifference // Cancellation time
-        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-      //  alarmManager.setExact(AlarmManager.RTC_WAKEUP, cancelTime, pendingIntent)
-        alarmManager.cancel(pendingIntent)
-    }
+//    fun cancelAlarm(){
+//        val cancelIntent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
+//        pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, cancelIntent, PendingIntent.FLAG_IMMUTABLE)
+//        val cancelTime = System.currentTimeMillis() + timeDifference // Cancellation time
+//        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//      //  alarmManager.setExact(AlarmManager.RTC_WAKEUP, cancelTime, pendingIntent)
+//        alarmManager.cancel(pendingIntent)
+//    }
 
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -502,26 +514,32 @@ val t=startTimeMillis-currentTimeMillis
 
 
     override fun onClickToRemove(alert: AlertMessage) {
-//        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        val intent = Intent(activity, AlertBroadcastReceiver::class.java)
-//        pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,PendingIntent.FLAG_IMMUTABLE)
-
+        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(activity, AlertBroadcastReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.cancel(pendingIntent)
         alertViewModel.deleteData(alert)
 
     }
 
   override fun stopAlarm(alert: AlertMessage) {
-//        alarmManager.cancel(pendingIntent)
-//        Toast.makeText(requireContext(), "Alarm canceled1", Toast.LENGTH_LONG).show()
-//
-//        bindingAlarm.buttonDismiss.setOnClickListener {
-//
-//            // Close the fragment or handle dismiss action
-//            requireActivity().runOnUiThread {
-//                Toast.makeText(requireContext(), "Alarm canceled", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        alertViewModel.deleteData(alert)
+      alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+      val intent = Intent(activity, AlertBroadcastReceiver::class.java)
+      pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,PendingIntent.FLAG_IMMUTABLE)
+
+      alarmManager.cancel(pendingIntent)
+        Toast.makeText(requireContext(), "Alarm canceled1", Toast.LENGTH_LONG).show()
+      bindingAlarm.buttonDismiss.setOnClickListener {
+
+          // Close the fragment or handle dismiss action
+          requireActivity().runOnUiThread {
+              Toast.makeText(requireContext(), "Alarm canceled", Toast.LENGTH_SHORT).show()
+          }
+          alertViewModel.deleteData(alert)
+      }
+
+
+        alertViewModel.deleteData(alert)
    }
     fun triggerTime(toDate: String, toTime: String): Calendar {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
@@ -541,88 +559,3 @@ val t=startTimeMillis-currentTimeMillis
 
 }
 
-
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//
-//        // Register BroadcastReceiver to handle alarm trigger event
-//        val intentFilter = IntentFilter("com.example.ALARM_TRIGGERED")
-//        requireContext().registerReceiver(alarmReceiver, intentFilter)
-//    }
-//
-//    override fun onDetach() {
-//        super.onDetach()
-//
-//        // Unregister BroadcastReceiver when fragment is detached
-//        requireContext().unregisterReceiver(alarmReceiver)
-//    }
-//companion object {
-//    @JvmStatic
-//    fun newInstance(param1: String, param2: String) =
-//        AlertFragment().apply {
-//            arguments = Bundle().apply {
-//
-//            }
-//        }
-//}
-
-//    @SuppressLint("SimpleDateFormat")
-//    private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
-//    val dateTimeString = "$fromDate $fromTime"
-//    val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault())
-//    val selectedTime = dateFormat.parse(dateTimeString)?.time ?: 0
-//
-//    val currentTime = System.currentTimeMillis()
-//
-//    val millisecondsDifference = -1*(selectedTime - currentTime)
-//    Log.i("TAG", "calcDateAndTime: current $currentTime")
-//    Log.i("TAG", "calcDateAndTime: selected $selectedTime")
-//    println("Milliseconds from current time to selected time: $millisecondsDifference")
-//
-//    return selectedTime
-//    }
-//@SuppressLint("SimpleDateFormat")
-//private fun calcDateAndTime(fromDate: String, fromTime: String): Long {
-//    val dateTimeString = "$fromDate $fromTime"
-//
-//    val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault())
-//    val selectedTime = dateFormat.parse(dateTimeString)?.time ?: 0
-//
-//    val currentTime = System.currentTimeMillis()
-//
-//    // Calculate the time difference between selected time and current time
-//    return selectedTime
-//}
-
-//fun setNotification(context: Context, triggerTime: Long) {
-//    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//    val intent = Intent(context, AlertBroadcastReceiver::class.java).apply {
-//        putExtra("description", description)
-//        putExtra("city", city)
-//    }
-//    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//    // val triggerTime = System.currentTimeMillis() + timeDifference
-//
-//    // Set the alarm to trigger at the calculated trigger time
-//    alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-//    // alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-//    Log.i("TAG", "onTimeSet:save $triggerTime ")
-//}
-//@SuppressLint("ScheduleExactAlarm")
-//private fun setWeatherAlert(time : Long) {
-//    val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//    val intent = Intent(requireContext(), AlertBroadcastReceiver::class.java)
-//    val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,
-//        PendingIntent.FLAG_IMMUTABLE)
-//
-//    // Calculate the time to trigger the alarm (current time + 2 minutes)
-//    // val triggerTimeMillis = System.currentTimeMillis() + (1 * 60 * 1000) // Current time + 2 minutes
-//
-//    // Set the alarm based on calculated trigger time
-//    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
-//
-//    // Log the trigger time for debugging purposes
-//    // Log.i("TAG", "Trigger time: ${Date(triggerTimeMillis)}")
-//    // Save user preferences, such as start/end time and alarm type
-//    //  saveAlertSettings(startTimeMillis, endTimeMillis, alarmType)
-//}

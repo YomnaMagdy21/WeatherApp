@@ -79,21 +79,6 @@ class HomeViewModelTest{
        val successState = value as UIState.Success<*>
        assertThat(successState.data, `is`(weatherResponse1))
 
-//       launch {
-//           val value=viewModel.weather.collectLatest { result ->
-//               when (result) {
-//                   is UIState.Success<*> -> {
-//                       assertThat(result.data, `is`(weatherResponse1))
-//                       cancel()
-//
-//                   }
-//
-//                   else -> {
-//
-//                   }
-//               }
-//
-//           }
 
 
     }
@@ -115,12 +100,12 @@ class HomeViewModelTest{
     @Test
     fun deleteData() = runBlockingTest {
         // Given
-        // Perform the deletion operation in your ViewModel
+
         viewModel.insertData(weatherResponse2)
         viewModel.deleteData()
 
         // When
-        // Retrieve the LiveData value from the ViewModel
+
         val value = viewModel.weather.getOrAwaitValue {  }
 
 
@@ -128,28 +113,7 @@ class HomeViewModelTest{
 
         // Then
         assertThat(successState, `is`(nullValue()))
-//            .collectLatest {result->
-//            when(result){
-//                is UIState.Success<*>->{
-
-                     //   assertThat(value, `is`(nullValue()))
-
-//                }
-//                else->{
-//                    Log.i("TAG", "deleteData: ")
-//                }
-//            }
-//        }
-
-        // Then
-        // Assert that the value returned by the ViewModel is of type UIState.Success
-//        assertThat(value, `is`(instanceOf(UIState.Success::class.java)))
 //
-//        // Cast the value to UIState.Success to access the data
-//        val successState = value as UIState.Success<*>
-
-        // Assert that the data contained in the success state is null after deletion
-       // assertThat(value, `is`(nullValue()))
     }
 
 

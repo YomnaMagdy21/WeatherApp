@@ -6,13 +6,9 @@ import java.io.Serializable
 
 @Entity(tableName = "Favorite")
 data class Favorite(
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Int,
     var lat: Double,
     var lon: Double,
-//    var timezone: String,
-//    var timezone_offset: Long,
-//    var list: List<WeatherData>?,
+
     @PrimaryKey
     var city: String
 ): Serializable {

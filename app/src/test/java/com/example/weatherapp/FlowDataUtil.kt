@@ -2,8 +2,6 @@ package com.example.weatherapp
 
 
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -39,7 +37,7 @@ fun <T> Flow<T>.getOrAwaitValue(
         }
 
     } finally {
-        // Cancel the flow to prevent leaks
+
         this.onEach { }.launchIn(GlobalScope)
     }
 

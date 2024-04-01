@@ -2,8 +2,6 @@ package com.example.weatherapp
 
 
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -34,13 +32,13 @@ fun <T> Flow<T>.getOrAwaitValue(
     try {
         afterObserve.invoke()
 
-        // Don't wait indefinitely if the StateFlow is not set.
+
         if (!latch.await(time, timeUnit)) {
             throw TimeoutException("StateFlow value was never set.")
         }
 
     } finally {
-        // Cancel the flow to prevent leaks
+
         this.onEach { }.launchIn(GlobalScope)
     }
 

@@ -32,8 +32,11 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
+import com.example.weatherapp.alert.viewmodel.AlertViewModel
+import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.AlarmBinding
+import com.example.weatherapp.databinding.AlertDialogBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
 import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.model.WeatherRepository
@@ -46,60 +49,80 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.log
 
-class AlertBroadcastReceiver : BroadcastReceiver() {
+class AlertBroadcastReceiver() : BroadcastReceiver() {
 
     lateinit var homeViewModel: HomeViewModel
     lateinit var homeViewModelFactory: HomeViewModelFactory
     lateinit var weatherRepository: WeatherRepository
-    var lat = 0.0
-    var lon = 0.0
+
+    lateinit var language: String
+    lateinit var  unit:String
+    var lat:Double=0.0
+    var lon:Double=0.0
+
+    lateinit var   btnCancel:Button
+
+    lateinit var alertWay:String
  //   lateinit var bindingAlarm: AlarmBinding
+ lateinit var bindingDialog : AlertDialogBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override  fun onReceive(context: Context?, intent: Intent?) {
+    override  fun onReceive(context: Context, intent: Intent?) {
+
         // Check if the intent is null or context is null
         if (context == null || intent == null) {
             return
         }
         //  if (intent?.action == "com.example.ALARM_TRIGGERED") {
-        // Alarm triggered, execute your logic here
+            // Alarm triggered, execute your logic here
 
 
+              alertWay= context?.let { SharedPreference.getAlert(it) }.toString()
 
-        lat = SharedPreference.getLat(context)
-        lon = SharedPreference.getLon(context)
+            lat = SharedPreference.getLat(context)
+            lon = SharedPreference.getLon(context)
+            unit = SharedPreference.getUnit(context)
 
-        weatherRepository = WeatherRepositoryImp.getInstance(
-            WeatherRemoteDataSourceImp.getInstance(),
-            WeatherLocalDataSourceImp(context)
-        )
+            language = SharedPreference.getLanguage(context)
 
-        val result = weatherRepository.getWeather(lat, lon, "", "standard", "ar")
-        val description = intent.getStringExtra("description")
-        val city = intent.getStringExtra("city")
+            weatherRepository = WeatherRepositoryImp.getInstance(
+                WeatherRemoteDataSourceImp.getInstance(),
+                WeatherLocalDataSourceImp(context)
+            )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            result.collectLatest {
-                val dataList = it.list.get(0).weather.get(0).description
-                Log.i("TAG", "onReceive: lat $lat")
-                Log.i("TAG", "onReceive: desc $dataList")
-                val city = it.city.name
-                Log.i("TAG", "onReceive: city $city")
+            val result = weatherRepository.getWeather(lat, lon, "", unit, language)
+            val description = intent.getStringExtra("description")
+            val city = intent.getStringExtra("city")
+
+            CoroutineScope(Dispatchers.IO).launch {
+                result.collectLatest {
+                    val dataList = it.list.get(0).weather.get(0).description
+                    Log.i("TAG", "onReceive: lat $lat")
+                    Log.i("TAG", "onReceive: desc $dataList")
+                    val city = it.city.name
+                    Log.i("TAG", "onReceive: city $city")
 
 
-                // Retrieve information from the intent (if needed)
-                val message = intent.getStringExtra("message")
-                //if (city != null && description != null) {
+                    // Retrieve information from the intent (if needed)
+                    val message = intent.getStringExtra("message")
+                    //if (city != null && description != null) {
                     // Create a notification channel (for Android O and above)
-                    createNotification(context, dataList, city)
-                    showAlarm(context, dataList, city)
+                    Log.i("TAG", "onReceive: alertWay $alertWay ")
+                    if (alertWay == "notification") {
+                        createNotification(context, dataList, city)
+                    } else {
 
-              //  }
+                        showAlarm(context, dataList, city)
+                    }
+
+                    //  }
+
+                }
 
             }
-
-        }
+       // }
     }
     fun createNotification(context:Context,description:String,city:String){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -141,6 +164,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun showAlarm(context:Context,d:String,c:String){
+
         // Check for the permission and request it if not granted
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName))
@@ -156,7 +180,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
         val view = LayoutInflater.from(context).inflate(R.layout.alarm, null, false)
         var alarmMsg=view.findViewById(R.id.text_alarm_time)  as TextView
         alarmMsg.text=d+" "+c
-        var btnCancel=view.findViewById(R.id.button_dismiss)  as Button
+         btnCancel=view.findViewById(R.id.button_dismiss)  as Button
         btnCancel.setBackgroundColor(Color.rgb(138,199,219))
         btnCancel.shadowRadius
 
@@ -172,15 +196,7 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
                 PixelFormat.TRANSLUCENT
             )
 
-        layoutParams.alpha=0.9f
-        layoutParams.horizontalWeight=50f
-
-        layoutParams.windowAnimations=20
-
-        layoutParams.width=750
-        layoutParams.buttonBrightness=20f
-        layoutParams.gravity=Gravity.CENTER_HORIZONTAL
-        layoutParams.gravity = Gravity.TOP
+        setAlarmUI(layoutParams)
 
         val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TITLE_COLUMN_INDEX)
         val ringtone = RingtoneManager.getRingtone(context.applicationContext, ringtoneUri)
@@ -196,14 +212,30 @@ class AlertBroadcastReceiver : BroadcastReceiver() {
             ringtone.play()
            // messageTextView.text = message
         }
+        SharedPreference.saveCancel(context,"not")
         btnCancel.setBackgroundResource(R.drawable.rounded_button)
         btnCancel.setOnClickListener {
             view.visibility=View.GONE
             ringtone.stop()
+            SharedPreference.saveCancel(context,"cancel")
+
 
         }
 
 
+    }
+
+
+    fun setAlarmUI(layoutParams:WindowManager.LayoutParams){
+        layoutParams.alpha=0.9f
+        layoutParams.horizontalWeight=50f
+
+        layoutParams.windowAnimations=20
+
+        layoutParams.width=750
+        layoutParams.buttonBrightness=20f
+        layoutParams.gravity=Gravity.CENTER_HORIZONTAL
+        layoutParams.gravity = Gravity.TOP
     }
 }
 

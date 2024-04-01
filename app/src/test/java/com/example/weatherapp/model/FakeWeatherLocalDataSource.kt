@@ -12,11 +12,7 @@ class FakeWeatherLocalDataSource:WeatherLocalDataSource {
     var homeData:MutableList<WeatherResponse> = mutableListOf()
     var favData:MutableList<List<Favorite>> = mutableListOf()
     var alertData:MutableList<AlertMessage> = mutableListOf()
-   //  var repo: FakeWeatherRepository=FakeWeatherRepository()
-//   private val dao: WeatherDAO by lazy {
-//       val db: WeatherDataBase = WeatherDataBase.getInstance(ApplicationProvider.getApplicationContext())
-//       db.getWeatherDao()
-//   }
+
     override suspend fun insert(weatherResponse: WeatherResponse) {
         homeData.add(weatherResponse)
     }

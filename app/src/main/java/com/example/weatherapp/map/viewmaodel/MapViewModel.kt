@@ -24,18 +24,6 @@ class MapViewModel  (private val _irepo:WeatherRepository): ViewModel(){
         }
     }
 
-//     fun getWeather(lat:Double, lon:Double, exclude:String, lang:String, units:String){
-//        viewModelScope.launch(Dispatchers.IO){
-//            //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,lang,units))
-//            _irepo.getWeather(lat,lon,exclude,lang,units)
-//                .catch {
-//                        e->
-//                    _fav.value= UIState.Failure(e)
-//                }
-//                .collect{
-//                    _fav.value= UIState.Success(it)
-//                }
-//        }
-//    }
+
 
 }

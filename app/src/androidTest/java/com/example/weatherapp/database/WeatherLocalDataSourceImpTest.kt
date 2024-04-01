@@ -61,17 +61,30 @@ class WeatherLocalDataSourceImpTest{
 //        val result2 = Favorite(1.0, 1.0, "Location 2")
 
         // When
-        localDataSource.insertFav(result)
         localDataSource.insertFav(result2)
+        localDataSource.insertFav(result)
 
         // Then
         val storedFavorites = localDataSource.getStoredFavorite().first()
 
        // assertThat(storedFavorites.size, `is`(2))
 
-        assertThat(storedFavorites, `is`(listOf(result,result2)))
+        assertThat(storedFavorites, `is`(listOf(result2,result)))
 
       //  assertThat(storedFavorites[1].lat, `is`(result2.lat))
+
+    }
+    @Test
+    fun delete_Favorite()= runBlockingTest{
+        //Given
+
+        //When
+        localDataSource.insertFav(result2)
+        localDataSource.deleteFav(result2)
+
+        //Then
+        val deletedData=localDataSource.getStoredFavorite().getOrAwaitValue {  }
+        assertThat(deletedData, not(result2))
 
     }
 
@@ -84,26 +97,15 @@ class WeatherLocalDataSourceImpTest{
 
 
         //When
+        localDataSource.insertFav(result2)
         localDataSource.insertFav(result)
 
         //Then
-        val data=localDataSource.getStoredFavorite().getOrAwaitValue {  }.first()
-        assertThat(data,`is`(result))
+
+        val data=localDataSource.getStoredFavorite().getOrAwaitValue {  }
+        assertThat(data,`is`(listOf(result2,result)))
     }
 
-    @Test
-    fun delete_Favorite()= runBlockingTest{
-        //Given
-
-        //When
-        localDataSource.insertFav(result)
-        localDataSource.deleteFav(result)
-
-        //Then
-        val deletedData=localDataSource.getStoredFavorite().getOrAwaitValue {  }
-        assertThat(deletedData, not(result))
-
-    }
 
 
 

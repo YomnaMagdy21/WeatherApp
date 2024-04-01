@@ -9,26 +9,20 @@ import kotlinx.coroutines.flow.flowOf
 class FakeWeatherRepository: WeatherRepository {
 
     private val weatherData = listOf<WeatherResponse>()
-    private var getWeatherCalledWith: Pair<Double, Double>? = null
     var homeData:MutableList<WeatherResponse> = mutableListOf()
      var fakeWeatherLocalDataSource=FakeWeatherLocalDataSource()
     var fakeWeatherRemoteDataSource=FakeRemoteDataSource()
+
     private val favoriteList = mutableListOf<Favorite>()
+
     private val alertList = mutableListOf<AlertMessage>()
 
     override fun getWeather(lat: Double, lon: Double, exclude: String, units: String, lang: String): Flow<WeatherResponse> {
-       // getWeatherCalledWith = Pair(lat, lon)
-        return flowOf(WeatherResponse()) // Return the first item or customize behavior
+
+        return flowOf(WeatherResponse())
     }
 
-    override suspend fun getCurrentWeather(
-        lat: Double,
-        lon: Double,
-        lang: String,
-        units: String
-    ): Flow<CurrentWeather> {
-        return flowOf()
-    }
+
 
     override fun getHomeWeather(): Flow<WeatherResponse> {
         return flowOf(WeatherResponse())

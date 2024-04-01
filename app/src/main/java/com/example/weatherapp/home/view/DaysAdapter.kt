@@ -74,21 +74,6 @@ class DayAdapter (var context: Context):
           holder.binding.day.text=dayOfWeekName
       }
 
-//        for (dateTime in current.dt_txt) {
-//            val dayOfWeekName = dayOfWeekEnum.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
-//            daysToShow.add(dayOfWeekName)
-//            if (daysToShow.size >= daysToShowCount) {
-//                break // Break loop once desired number of unique days is reached
-//            }
-//        current.dt_txt.map {
-//            if(daysToShow.contains(dayOfWeekName)){
-//                holder.binding.day.text=dayOfWeekName
-//            }
-//
-//        }
-
-
-
 
 
         var iconName=current.weather[0].icon

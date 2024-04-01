@@ -17,7 +17,7 @@ import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.setting.viewmodel.SettingViewModel
-import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
+//import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,35 +29,13 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var settingViewModel: SettingViewModel
-    lateinit var settingViewModelFactory: SettingViewModelFactory
+  //  lateinit var settingViewModelFactory: SettingViewModelFactory
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        settingViewModelFactory= SettingViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(this)
-            ))
-
-        settingViewModel= ViewModelProvider(this,settingViewModelFactory).get(SettingViewModel::class.java)
-//
-//        lifecycleScope.launchWhenStarted {
-//            settingViewModel.languageChangeFlow.collectLatest {
-//                updateAppContext(it)
-//                recreate()
-//            }
-//        }
-//
-////        MainScope().launch {
-//            settingViewModel.languageChangeFlow.collect { locale ->
-//                // Update the context when the language changes
-//                attachBaseContext(LanguageContextWrapper.wrap(baseContext, locale))
-//                recreate() // Recreate the activity to reflect the language change
-//            }
-//        }
-
 
 
         navController = findNavController(this, R.id.nav_home_fragment)
@@ -93,39 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-    private fun updateAppContext(language: String) {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-        ActivityCompat.recreate(this) // Recreate activity to apply language changes
-    }
+
 
 }
-
-//class LanguageContextWrapper(base: Context) : ContextWrapper(base) {
-//
-//    companion object {
-//        fun wrap(context: Context, newLocale: String): ContextWrapper {
-//            var newContext = context
-//
-//            val res = newContext.resources
-//            val configuration = res.configuration
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                configuration.setLocale(newLocale)
-//                val localeList = LocaleList(newLocale)
-//                LocaleList.setDefault(localeList)
-//                configuration.locales = localeList
-//                newContext = newContext.createConfigurationContext(configuration)
-//            } else {
-//                configuration.locale = newLocale
-//                res.updateConfiguration(configuration, res.displayMetrics)
-//            }
-//
-//            return LanguageContextWrapper(newContext)
-//        }
-//    }
-//}
 

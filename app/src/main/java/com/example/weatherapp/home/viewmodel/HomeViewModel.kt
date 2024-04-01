@@ -16,10 +16,9 @@ class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
 
     init {
         getLocalData()
-      //  getWeather(37.4220936,-122.083922,"","","")
-      //  geCurrentWeather(37.4220936,-122.083922,"","")
+
     }
-//
+
 
     fun deleteData(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -61,17 +60,5 @@ class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
         }
     }
 
-//    private fun geCurrentWeather(lat:Double, lon:Double, lang:String, units:String){
-//        viewModelScope.launch(Dispatchers.IO){
-//            //  _weather.postValue(_irepo.getWeather(lat,lon,exclude,lang,units))
-//            _irepo.getCurrentWeather(lat,lon,lang,units)
-//                .catch {
-//                        e->
-//                    _weather.value= UIState.Failure(e)
-//                }
-//                .collect{
-//                    _weather.value= UIState.Success(it)
-//                }
-//        }
-//    }
+
 }
