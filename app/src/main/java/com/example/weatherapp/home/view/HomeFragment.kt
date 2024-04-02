@@ -162,11 +162,13 @@ class HomeFragment : Fragment() {
         lat=SharedPreference.getLat(requireContext())
         lon=SharedPreference.getLon(requireContext())
         language=SharedPreference.getLanguage(requireContext())
-        getFreshLocation()
+
 
         Log.i("TAG", "onViewCreated:loc $location ")
         if (NetworkConnection.checkNetworkConnection(requireContext())) {
             homeViewModel.deleteData()
+            getFreshLocation()
+
             if (location == "map") {
                 bindingMap.btnAddFav.visibility = View.GONE
                 bindingMap.btnAddHome.visibility = View.VISIBLE

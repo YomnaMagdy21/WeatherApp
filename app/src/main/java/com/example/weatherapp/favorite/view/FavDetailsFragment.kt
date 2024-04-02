@@ -134,11 +134,7 @@ class FavDetailsFragment : Fragment() {
 //                                Log.i("TAG", "onViewCreated: Inserteddddd")
 //                            }
                             var latt=dataList?.lat
-                            if(dataList!=null) {
-                                homeViewModel.insertData(dataList)
-                                Log.i(TAG, "onViewCreated:lat $latt ")
 
-                            }
 
                         }
 
