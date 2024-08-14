@@ -7,12 +7,13 @@ import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.util.UIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val _irepo:WeatherRepository): ViewModel() {
     private var _weather: MutableStateFlow<UIState> = MutableStateFlow(UIState.Loading)
-    val weather: MutableStateFlow<UIState> = _weather
+    val weather: StateFlow<UIState> = _weather
 
     init {
         getLocalData()

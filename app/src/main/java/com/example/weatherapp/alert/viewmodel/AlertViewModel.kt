@@ -8,12 +8,13 @@ import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.util.UIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class AlertViewModel(private val _irepo: WeatherRepository): ViewModel()  {
     private var _alert: MutableStateFlow<UIState> = MutableStateFlow(UIState.Loading)
-    val alert: MutableStateFlow<UIState> = _alert
+    val alert: StateFlow<UIState> = _alert
 
 
     init {
