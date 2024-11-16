@@ -19,10 +19,11 @@ import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.setting.viewmodel.SettingViewModel
 
 import com.example.weatherapp.util.SharedPreference
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
-
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     lateinit var bindingDialog : LocationAlertBinding

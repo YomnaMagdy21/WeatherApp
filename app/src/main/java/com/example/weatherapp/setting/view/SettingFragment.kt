@@ -18,28 +18,29 @@ import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentSettingBinding
 import com.example.weatherapp.home.view.HomeFragment
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.map.viewmaodel.MapViewModel
-import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
+//import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.setting.viewmodel.SettingViewModel
-import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
+//import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
 import com.example.weatherapp.util.SharedPreference
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
-
+@AndroidEntryPoint
 class SettingFragment : Fragment() {
 
     lateinit var binding : FragmentSettingBinding
     private val languageFlow = MutableSharedFlow<String>()
     lateinit var settingViewModel: SettingViewModel
-    lateinit var settingViewModelFactory: SettingViewModelFactory
+   // lateinit var settingViewModelFactory: SettingViewModelFactory
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+   // lateinit var homeViewModelFactory: HomeViewModelFactory
 
 
     override fun onCreateView(
@@ -56,24 +57,24 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        homeViewModelFactory = HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        homeViewModelFactory = HomeViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        settingViewModelFactory = SettingViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        settingViewModelFactory = SettingViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
         settingViewModel =
-            ViewModelProvider(this, settingViewModelFactory).get(SettingViewModel::class.java)
+            ViewModelProvider(this).get(SettingViewModel::class.java)
 
 
         binding.arabic.setOnClickListener {

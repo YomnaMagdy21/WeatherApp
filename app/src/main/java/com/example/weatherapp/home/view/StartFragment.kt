@@ -25,15 +25,16 @@ import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentStartBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.SharedPreference
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
 
-
+@AndroidEntryPoint
 class StartFragment : Fragment() {
 
     lateinit var binding:FragmentStartBinding
@@ -43,7 +44,7 @@ class StartFragment : Fragment() {
 
     lateinit var fragment: Fragment
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+   // lateinit var homeViewModelFactory: HomeViewModelFactory
     lateinit var location:String
     lateinit var language:String
     lateinit var sharedPreferences:SharedPreferences
@@ -63,14 +64,14 @@ class StartFragment : Fragment() {
 
         binding = FragmentStartBinding.inflate(inflater, container, false)
 
-        homeViewModelFactory = HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        homeViewModelFactory = HomeViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
 

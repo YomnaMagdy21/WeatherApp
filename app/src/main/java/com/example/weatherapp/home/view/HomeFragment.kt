@@ -33,7 +33,7 @@ import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.databinding.LocationAlertBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
 
 import com.example.weatherapp.model.WeatherRepositoryImp
@@ -48,18 +48,19 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
     lateinit var hourAdapter: HourAdapter
     lateinit var dayAdapter: DayAdapter
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+   // lateinit var homeViewModelFactory: HomeViewModelFactory
     lateinit var bindingDialog: LocationAlertBinding
     lateinit var geocoder: Geocoder
     private lateinit var fusedClient: FusedLocationProviderClient
@@ -122,14 +123,14 @@ class HomeFragment : Fragment() {
 
         }
 
-        homeViewModelFactory = HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        homeViewModelFactory = HomeViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         unit=SharedPreference.getUnit(requireContext())
         location = SharedPreference.getLocation(requireContext())
         lat=SharedPreference.getLat(requireContext())

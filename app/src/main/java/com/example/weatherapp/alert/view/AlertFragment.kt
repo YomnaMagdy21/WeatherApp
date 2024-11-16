@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.alert.viewmodel.AlertViewModel
-import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
+//import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.AlarmBinding
 import com.example.weatherapp.databinding.AlertDialogBinding
@@ -44,13 +44,14 @@ import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.example.weatherapp.favorite.view.FavoriteAdapter
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.model.AlertMessage
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.SharedPreference
 import com.example.weatherapp.util.UIState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -58,7 +59,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerDialog.OnDateSetListener,OnAlertClickListener{
 
     lateinit var binding : FragmentAlertBinding
@@ -78,14 +79,14 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
     private var isFromButtonClicked = false
     var isAM = true
     lateinit var alertViewModel: AlertViewModel
-    lateinit var alertViewModelFactory: AlertViewModelFactory
+   // lateinit var alertViewModelFactory: AlertViewModelFactory
     lateinit var alert:AlertMessage
      var dateFrom:String=""
      var timeFrom:String=""
      var dateTo:String=""
      var timeTo:String=""
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+  //  lateinit var homeViewModelFactory: HomeViewModelFactory
      var lat=0.0
     var lon=0.0
     lateinit var city:String
@@ -131,23 +132,23 @@ class AlertFragment : Fragment() ,TimePickerDialog.OnTimeSetListener,DatePickerD
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        alertViewModelFactory = AlertViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        alertViewModelFactory = AlertViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        alertViewModel = ViewModelProvider(this, alertViewModelFactory).get(AlertViewModel::class.java)
+        alertViewModel = ViewModelProvider(this).get(AlertViewModel::class.java)
 
-        homeViewModelFactory = HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        homeViewModelFactory = HomeViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
         binding.floatingActionButton2.setOnClickListener {

@@ -6,9 +6,13 @@ import com.example.weatherapp.model.AlertData
 import com.example.weatherapp.model.AlertMessage
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class WeatherLocalDataSourceImp (context: Context):WeatherLocalDataSource {
+class WeatherLocalDataSourceImp @Inject constructor(
+    @ApplicationContext private val context: Context
+):WeatherLocalDataSource {
 
     private val dao:WeatherDAO by lazy {
         val db:WeatherDataBase=WeatherDataBase.getInstance(context)

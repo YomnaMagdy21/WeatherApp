@@ -5,13 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepository
 import com.example.weatherapp.util.UIState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoriteViewModel (private val _irepo: WeatherRepository): ViewModel(){
+@HiltViewModel
+class FavoriteViewModel @Inject constructor(private val _irepo: WeatherRepository): ViewModel(){
 
     private var _favorite: MutableStateFlow<UIState> = MutableStateFlow(UIState.Loading)
     val favorites: StateFlow<UIState> = _favorite

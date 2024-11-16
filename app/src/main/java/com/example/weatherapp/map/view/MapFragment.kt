@@ -26,9 +26,9 @@ import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentMapBinding
 import com.example.weatherapp.home.view.HomeFragment
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.map.viewmaodel.MapViewModel
-import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
+//import com.example.weatherapp.map.viewmaodel.MapViewModelFactory
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
@@ -40,6 +40,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import dagger.hilt.android.AndroidEntryPoint
 
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -50,7 +51,7 @@ import org.osmdroid.views.overlay.Overlay
 import java.io.IOException
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class MapFragment : Fragment()  {
 
     private lateinit var mapView: MapView
@@ -62,12 +63,12 @@ class MapFragment : Fragment()  {
     private lateinit var fusedClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     lateinit var mapViewModel: MapViewModel
-    lateinit var mapViewModelFactory: MapViewModelFactory
+   // lateinit var mapViewModelFactory: MapViewModelFactory
       var lon:Double=1.0
     var lat:Double=1.0
      lateinit var favorite: Favorite
      lateinit var homeViewModel: HomeViewModel
-     lateinit var homeViewModelFactory: HomeViewModelFactory
+   //  lateinit var homeViewModelFactory: HomeViewModelFactory
      lateinit var weatherResponse: WeatherResponse
      lateinit var location:String
      lateinit var unit:String
@@ -124,19 +125,19 @@ class MapFragment : Fragment()  {
         binding.mapView.overlays.add(TapOverlay())
 
 
-        mapViewModelFactory= MapViewModelFactory(WeatherRepositoryImp.getInstance(
-            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
+//        mapViewModelFactory= MapViewModelFactory(WeatherRepositoryImp.getInstance(
+//            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
 
-        mapViewModel= ViewModelProvider(this,mapViewModelFactory).get(MapViewModel::class.java)
+        mapViewModel= ViewModelProvider(this).get(MapViewModel::class.java)
          location= SharedPreference.getLocation(requireContext())
         unit=SharedPreference.getUnit(requireContext())
         language=Locale.getDefault().language
         Log.i("TAG", "onCreateView:location: $location ")
 
-        homeViewModelFactory= HomeViewModelFactory(WeatherRepositoryImp.getInstance(
-            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
+//        homeViewModelFactory= HomeViewModelFactory(WeatherRepositoryImp.getInstance(
+//            WeatherRemoteDataSourceImp.getInstance(),WeatherLocalDataSourceImp(requireContext())))
 
-        homeViewModel= ViewModelProvider(this,homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel= ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
         if(location=="map"){

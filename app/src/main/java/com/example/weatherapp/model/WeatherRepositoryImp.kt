@@ -4,25 +4,26 @@ package com.example.weatherapp.model
 import com.example.weatherapp.database.WeatherLocalDataSource
 import com.example.weatherapp.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class WeatherRepositoryImp(private var weatherRemoteDataSource: WeatherRemoteDataSource,
-                           private var weatherLocalDataSource: WeatherLocalDataSource
+class WeatherRepositoryImp @Inject constructor(private var weatherRemoteDataSource: WeatherRemoteDataSource,
+                                               private var weatherLocalDataSource: WeatherLocalDataSource
 ):WeatherRepository{
 
-    companion object{
-        private var instance:WeatherRepositoryImp?=null
-        fun getInstance(
-            weatherRemoteDataSource: WeatherRemoteDataSource,
-            weatherLocalDataSource: WeatherLocalDataSource
-        ):WeatherRepositoryImp{
-            return instance?: synchronized(this){
-                val temp=WeatherRepositoryImp(
-                    weatherRemoteDataSource,weatherLocalDataSource)
-                instance=temp
-                temp
-            }
-        }
-    }
+//    companion object{
+//        private var instance:WeatherRepositoryImp?=null
+//        fun getInstance(
+//            weatherRemoteDataSource: WeatherRemoteDataSource,
+//            weatherLocalDataSource: WeatherLocalDataSource
+//        ):WeatherRepositoryImp{
+//            return instance?: synchronized(this){
+//                val temp=WeatherRepositoryImp(
+//                    weatherRemoteDataSource,weatherLocalDataSource)
+//                instance=temp
+//                temp
+//            }
+//        }
+//    }
 
     override  fun getWeather(lat:Double, lon:Double, exclude:String, units:String, lang:String): Flow<WeatherResponse> {
         return weatherRemoteDataSource.getTempOverNetwork(lat,lon,exclude,units,lang)

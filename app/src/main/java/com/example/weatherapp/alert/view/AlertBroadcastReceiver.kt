@@ -33,28 +33,29 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.alert.viewmodel.AlertViewModel
-import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
+//import com.example.weatherapp.alert.viewmodel.AlertViewModelFactory
 import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.AlarmBinding
 import com.example.weatherapp.databinding.AlertDialogBinding
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.model.WeatherRepository
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.SharedPreference
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.log
-
+@AndroidEntryPoint
 class AlertBroadcastReceiver() : BroadcastReceiver() {
 
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+   // lateinit var homeViewModelFactory: HomeViewModelFactory
     lateinit var weatherRepository: WeatherRepository
 
     lateinit var language: String
@@ -87,10 +88,10 @@ class AlertBroadcastReceiver() : BroadcastReceiver() {
 
             language = SharedPreference.getLanguage(context)
 
-            weatherRepository = WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(context)
-            )
+//            weatherRepository = WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(context)
+//            )
 
             val result = weatherRepository.getWeather(lat, lon, "", unit, language)
             val description = intent.getStringExtra("description")

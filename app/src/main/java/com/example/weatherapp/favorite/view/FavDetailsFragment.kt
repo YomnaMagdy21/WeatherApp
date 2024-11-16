@@ -17,11 +17,11 @@ import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentFavDetailsBinding
 import com.example.weatherapp.favorite.viewmodel.FavoriteViewModel
-import com.example.weatherapp.favorite.viewmodel.FavoriteViewModelFactory
+//import com.example.weatherapp.favorite.viewmodel.FavoriteViewModelFactory
 import com.example.weatherapp.home.view.DayAdapter
 import com.example.weatherapp.home.view.HourAdapter
 import com.example.weatherapp.home.viewmodel.HomeViewModel
-import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
+//import com.example.weatherapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.model.WeatherResponse
@@ -29,13 +29,14 @@ import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.NetworkConnection
 import com.example.weatherapp.util.SharedPreference
 import com.example.weatherapp.util.UIState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class FavDetailsFragment : Fragment() {
 
     private val TAG="TAG"
@@ -44,9 +45,9 @@ class FavDetailsFragment : Fragment() {
     lateinit var hourAdapter: HourAdapter
     lateinit var dayAdapter: DayAdapter
     lateinit var favoriteViewModel: FavoriteViewModel
-    lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
+   // lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
     lateinit var homeViewModel: HomeViewModel
-    lateinit var homeViewModelFactory: HomeViewModelFactory
+  //  lateinit var homeViewModelFactory: HomeViewModelFactory
     lateinit var  unit:String
     lateinit var unitOfWindSpeed:String
 
@@ -64,12 +65,12 @@ class FavDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFavDetailsBinding.inflate(inflater, container, false)
-        favoriteViewModelFactory= FavoriteViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
-            ))
+//        favoriteViewModelFactory= FavoriteViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
+//            ))
 
-        favoriteViewModel= ViewModelProvider(this,favoriteViewModelFactory).get(FavoriteViewModel::class.java)
+        favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
 
         val favorite = arguments?.getSerializable("favorite") as? Favorite
 
@@ -85,14 +86,14 @@ class FavDetailsFragment : Fragment() {
             Log.i(TAG, "onCreateView: nullllllllll")
 
         }
-        homeViewModelFactory = HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(),
-                WeatherLocalDataSourceImp(requireContext())
-            )
-        )
+//        homeViewModelFactory = HomeViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(),
+//                WeatherLocalDataSourceImp(requireContext())
+//            )
+//        )
 
-        homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
 

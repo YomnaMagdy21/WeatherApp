@@ -17,12 +17,13 @@ import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.setting.viewmodel.SettingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 //import com.example.weatherapp.setting.viewmodel.SettingViewModelFactory
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var navController:NavController

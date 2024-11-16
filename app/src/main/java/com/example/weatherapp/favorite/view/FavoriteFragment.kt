@@ -17,21 +17,22 @@ import com.example.weatherapp.database.WeatherLocalDataSourceImp
 import com.example.weatherapp.databinding.FragmentAlertBinding
 import com.example.weatherapp.databinding.FragmentFavoriteBinding
 import com.example.weatherapp.favorite.viewmodel.FavoriteViewModel
-import com.example.weatherapp.favorite.viewmodel.FavoriteViewModelFactory
+//import com.example.weatherapp.favorite.viewmodel.FavoriteViewModelFactory
 import com.example.weatherapp.map.view.MapFragment
 import com.example.weatherapp.model.Favorite
 import com.example.weatherapp.model.WeatherRepositoryImp
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.UIState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
     lateinit var binding : FragmentFavoriteBinding
 
     lateinit var favoriteAdapter: FavoriteAdapter
     lateinit var favoriteViewModel: FavoriteViewModel
-    lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
+   // lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
 
 
 
@@ -55,12 +56,12 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
                 .addToBackStack(null)
                 .commit()
         }
-        favoriteViewModelFactory= FavoriteViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
-            ))
+//        favoriteViewModelFactory= FavoriteViewModelFactory(
+//            WeatherRepositoryImp.getInstance(
+//                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
+//            ))
 
-        favoriteViewModel= ViewModelProvider(this,favoriteViewModelFactory).get(FavoriteViewModel::class.java)
+        favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
 
         setUpRecyclerView()
 
