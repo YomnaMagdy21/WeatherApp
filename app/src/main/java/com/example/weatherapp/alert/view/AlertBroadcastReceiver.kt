@@ -45,6 +45,7 @@ import com.example.weatherapp.model.WeatherResponse
 import com.example.weatherapp.network.WeatherRemoteDataSourceImp
 import com.example.weatherapp.util.SharedPreference
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -56,7 +57,7 @@ class AlertBroadcastReceiver() : BroadcastReceiver() {
 
     lateinit var homeViewModel: HomeViewModel
    // lateinit var homeViewModelFactory: HomeViewModelFactory
-    lateinit var weatherRepository: WeatherRepository
+   private lateinit var weatherRepository: WeatherRepository
 
     lateinit var language: String
     lateinit var  unit:String
@@ -88,6 +89,8 @@ class AlertBroadcastReceiver() : BroadcastReceiver() {
 
             language = SharedPreference.getLanguage(context)
 
+        val entryPoint = EntryPointAccessors.fromApplication(context, AlertBroadcastReceiverEntryPoint::class.java)
+        weatherRepository = entryPoint.weatherRepository()
 //            weatherRepository = WeatherRepositoryImp.getInstance(
 //                WeatherRemoteDataSourceImp.getInstance(),
 //                WeatherLocalDataSourceImp(context)

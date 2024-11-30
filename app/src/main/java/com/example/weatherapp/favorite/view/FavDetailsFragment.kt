@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,7 +45,7 @@ class FavDetailsFragment : Fragment() {
     lateinit var binding : FragmentFavDetailsBinding
     lateinit var hourAdapter: HourAdapter
     lateinit var dayAdapter: DayAdapter
-    lateinit var favoriteViewModel: FavoriteViewModel
+     private val favoriteViewModel: FavoriteViewModel by viewModels()
    // lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
     lateinit var homeViewModel: HomeViewModel
   //  lateinit var homeViewModelFactory: HomeViewModelFactory
@@ -70,30 +71,30 @@ class FavDetailsFragment : Fragment() {
 //                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
 //            ))
 
-        favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
-
-        val favorite = arguments?.getSerializable("favorite") as? Favorite
-
-        Log.i(TAG, "onCreateView: ${favorite?.city}")
-        val currentLanguageCode = SharedPreference.getLanguage(requireContext())
-        unit= SharedPreference.getUnit(requireContext())
-
-        if (favorite != null) {
-            favoriteViewModel.getWeather(favorite.lat,favorite.lon,"",unit,currentLanguageCode)
-            Log.i(TAG, "onCreateView: ${favorite.city}")
-        }
-        else{
-            Log.i(TAG, "onCreateView: nullllllllll")
-
-        }
-//        homeViewModelFactory = HomeViewModelFactory(
-//            WeatherRepositoryImp.getInstance(
-//                WeatherRemoteDataSourceImp.getInstance(),
-//                WeatherLocalDataSourceImp(requireContext())
-//            )
-//        )
-
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//        favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
+//
+//        val favorite = arguments?.getSerializable("favorite") as? Favorite
+//
+//        Log.i(TAG, "onCreateView: ${favorite?.city}")
+//        val currentLanguageCode = SharedPreference.getLanguage(requireContext())
+//        unit= SharedPreference.getUnit(requireContext())
+//
+//        if (favorite != null) {
+//            favoriteViewModel.getWeather(favorite.lat,favorite.lon,"",unit,currentLanguageCode)
+//            Log.i(TAG, "onCreateView: ${favorite.city}")
+//        }
+//        else{
+//            Log.i(TAG, "onCreateView: nullllllllll")
+//
+//        }
+////        homeViewModelFactory = HomeViewModelFactory(
+////            WeatherRepositoryImp.getInstance(
+////                WeatherRemoteDataSourceImp.getInstance(),
+////                WeatherLocalDataSourceImp(requireContext())
+////            )
+////        )
+//
+//        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 
 
@@ -101,6 +102,15 @@ class FavDetailsFragment : Fragment() {
 //        if (currentLanguageCode == "ar") {
 //            favorite?.lat?.let { homeViewModel.getWeather(it, favorite.lon, "", "", currentLanguageCode) }
 //        }
+        binding = FragmentFavDetailsBinding.inflate(inflater, container, false)
+
+        val favorite = arguments?.getSerializable("favorite") as? Favorite
+        val currentLanguageCode = SharedPreference.getLanguage(requireContext())
+        unit = SharedPreference.getUnit(requireContext())
+
+        if (favorite != null) {
+            favoriteViewModel.getWeather(favorite.lat, favorite.lon, "", unit, currentLanguageCode)
+        }
 
         return binding.root
     }

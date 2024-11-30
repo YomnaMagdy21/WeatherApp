@@ -39,20 +39,33 @@ class FavoriteAdapter(var context: Context, var listener: OnFavoriteClickListene
             listener.onClickToRemove(current)
         }
 
+
+
         if(current!=null) {
             Log.i("TAG", "onBindViewHolder: ${current.city}")
             holder.binding.favCardView.setOnClickListener {
-                (holder.itemView.context as? AppCompatActivity)?.let { activity ->
-                    listener.goToDetails(current)
-                }
-
+            Log.i("TAG", "favCardView clicked for: ${current.city}")
+            if (listener != null) {
+                Log.i("TAG", "Listener is set and not null")
+                listener.goToDetails(current)
+            } else {
+                Log.e("TAG", "Listener is null! Cannot navigate to details.")
             }
+        }
         }else{
             Log.i("TAG", "onBindViewHolder: current nullll")
         }
 
 
-
+//        holder.binding.favCardView.setOnClickListener {
+//            Log.i("TAG", "favCardView clicked for: ${current.city}")
+//            if (listener != null) {
+//                Log.i("TAG", "Listener is set and not null")
+//                listener.goToDetails(current)
+//            } else {
+//                Log.e("TAG", "Listener is null! Cannot navigate to details.")
+//            }
+//        }
 
 
     }

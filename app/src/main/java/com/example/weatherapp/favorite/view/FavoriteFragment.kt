@@ -1,13 +1,16 @@
 package com.example.weatherapp.favorite.view
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,7 +34,8 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
     lateinit var binding : FragmentFavoriteBinding
 
     lateinit var favoriteAdapter: FavoriteAdapter
-    lateinit var favoriteViewModel: FavoriteViewModel
+//    lateinit var favoriteViewModel: FavoriteViewModel
+private val favoriteViewModel: FavoriteViewModel by viewModels()
    // lateinit var favoriteViewModelFactory: FavoriteViewModelFactory
 
 
@@ -48,7 +52,7 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
         // Inflate the layout for this fragment
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        binding.floatingActionButton.setOnClickListener{
+        binding.floatingActionButton.setOnClickListener {
             requireActivity()
                 .supportFragmentManager
                 .beginTransaction()
@@ -61,7 +65,7 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
 //                WeatherRemoteDataSourceImp.getInstance(), WeatherLocalDataSourceImp(requireContext())
 //            ))
 
-        favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
+       // favoriteViewModel= ViewModelProvider(this).get(FavoriteViewModel::class.java)
 
         setUpRecyclerView()
 
@@ -100,6 +104,7 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
 
     fun setUpRecyclerView(){
         favoriteAdapter=FavoriteAdapter(requireContext(),this)
+        Log.i("TAG", "FavoriteAdapter initialized with context and listener")
         binding.favRecView.apply {
             adapter = favoriteAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -113,12 +118,29 @@ class FavoriteFragment : Fragment() ,OnFavoriteClickListener{
     override fun onClickToRemove(favorite: Favorite) {
         favoriteViewModel.deleteFavorite(favorite)
     }
-
     override fun goToDetails(favorite: Favorite) {
+        Log.d(TAG, "goToDetails method called")
+        Log.i(TAG, "Navigating to details for favorite: ${favorite.city}")
+
         val detailsFragment = FavDetailsFragment.newInstance(favorite)
-        val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.main,detailsFragment )
-        transaction.addToBackStack(null)
-        transaction.commit()
+
+//        val fragmentTransaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main, detailsFragment)
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+
+        // Use requireActivity() to ensure context is not null
+        try {
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.main, detailsFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Activity not attached or context is null: ${e.message}")
+        }
+
+
     }
+
+
 }
